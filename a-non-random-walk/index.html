@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>A Non-Random Walk</title>
+  <style>
+#canvas { border: 1px solid blue; }
+  </style>
+</head>
+<body>
+
+<h1>A Non-Random Walk</h1>
+
+<canvas id="canvas" width="600" height="400">
+Your browser doesn't support displaying an HTML5 canvas.
+</canvas>
+<button id="reset" onclick="t.reset();">Reset</button>
+</body>
+<script src="yoob/sprite-manager.js"></script>
+<script src="a-non-random-walk.js"></script>
+<script>
+  var t = new NonRandomWalk();
+  t.init(document.getElementById('canvas'));
+</script>

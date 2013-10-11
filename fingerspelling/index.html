@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Fingerspelling</title>
+  <style>
+#canvas { background: #aa99aa; }
+body { margin-bottom: 0; }
+  </style>
+</head>
+<body>
+
+  <header id="header">
+    <h1>Fingerspelling</h1>
+  </header>
+  <article>
+    <canvas id="canvas">
+    Your browser doesn't support displaying an HTML5 canvas.
+    </canvas>
+    <!--
+    <p id="status"></p>
+    -->
+  </article>
+
+</body>
+<script src="fingerspelling.js"></script>
+<script>
+  var canvas = document.getElementById('canvas');
+  var wol = new Fingerspelling();
+  wol.init(canvas);
+</script>
