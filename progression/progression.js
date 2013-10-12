@@ -1,4 +1,4 @@
-function CanvasExperiment1(canvas) {
+function ProgressionController(canvas) {
     var self = {};
     var counter;
     var interval_id;

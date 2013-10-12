@@ -1,4 +1,4 @@
-Canvas5Controller = function() {
+PrairieController = function() {
     var canvas;
     var interval_id;
 
