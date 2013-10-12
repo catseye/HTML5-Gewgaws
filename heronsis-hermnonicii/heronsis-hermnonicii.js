@@ -20,7 +20,7 @@ Floater = function() {
         ctx.lineWidth = this.getWidth() / 20;
 
         ctx.beginPath();
-        var anchorDist = 500; // this.getWidth() * (100 - this.getWidth());
+        var anchorDist = 500;
         ctx.moveTo(this.x + this.getWidth() / 2, this.getCenterY() - anchorDist);
         ctx.lineTo(this.getCenterX(), this.getCenterY());
         ctx.lineTo(this.x + this.getWidth() / 2, this.getCenterY() + anchorDist);
@@ -84,7 +84,6 @@ Floater = function() {
 Floater.prototype = new yoob.Sprite();
 
 HeronsisHermnonicii = function() {
-    //var canvas;
     var ctx;
     var intervalId;
 

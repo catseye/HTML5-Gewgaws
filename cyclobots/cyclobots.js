@@ -87,7 +87,7 @@ Cyclobots = function() {
 
         for (var i = 0; i < numbots; i++) {
             bots[i] = new Cyclobot();
-            bots[i].init(  // 50 + i * 50, 150 + Math.random() * 50,
+            bots[i].init(
               /*x*/50 + Math.random() * (canvas.width - 100),
               /*y*/50 + Math.random() * (canvas.height - 100),
               /*theta*/Math.random() * twopi,

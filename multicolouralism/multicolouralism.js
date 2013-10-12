@@ -27,7 +27,7 @@ Multicolouralism = function() {
         d3 = Math.pow(d3, level);
         d4 = Math.pow(d4, level);
 
-        // pick a real number between 0 and sum of all distances
+        // pick a rational number between 0 and sum of all distances
         var r = Math.random() * (d1+d2+d3+d4);
 
         if (r < d1) return "#00ffff";
