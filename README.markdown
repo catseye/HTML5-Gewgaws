@@ -12,7 +12,7 @@ between automata, games, and art.
 or whatever, it will probably have its own repo instead of being in this one.)
 
 If you want to see these gewgaws in action, you should head on over to
-[the online Gallery at Cat's Eye Technologies](http://catseye.tc/node/Online_Installations).
+[the online Gallery at Cat's Eye Technologies](http://catseye.tc/node/Online_Installation).
 
 The contents of this repo are in the public domain; see the file `UNLICENSE`
 for more information.  This includes any images found within, which I have
