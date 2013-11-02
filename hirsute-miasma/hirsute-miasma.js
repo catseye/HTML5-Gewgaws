@@ -23,7 +23,7 @@ HirsuteMiasma = function() {
         ctx.beginPath();
         ctx.lineWidth = 2;
         var prevV = v;
-        v = Math.floor((Math.cos(tick / 100) + 1) * 128);
+        v = Math.floor((Math.cos(tick / 250) + 1) * 128);
         if (status) status.innerHTML = v;
       
         if ((prevV === 1 && v === 0) || (prevV === 254 && v === 255)) {

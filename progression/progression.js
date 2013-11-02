@@ -6,7 +6,7 @@ function ProgressionController(canvas) {
     self.draw = function() {
       var ctx = canvas.getContext('2d');
 
-      document.getElementById('counter').innerHTML = counter;
+      document.getElementById('counter').innerHTML = Math.floor(counter);
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -22,8 +22,8 @@ function ProgressionController(canvas) {
       }
       ctx.lineTo(canvas.width,0);
       ctx.stroke();
-      
-      counter += 1;
+
+      counter += 0.5;
     };
 
     self.start = function() {
