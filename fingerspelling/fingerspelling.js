@@ -1,20 +1,19 @@
 Thing = function() {
-    this.init = function(x, y, w, h, str, intensity) {
+    this.init = function(x, y, w, h, str, intensity, r, g, b) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.str = str;
         this.intensity = intensity;
+        this.r = r || 0;
+        this.g = g || 0;
+        this.b = b || 0;
         return this;
     };
 
     this.draw = function(ctx) {
-      var r = 0;
-      var g = 0;
-      var b = 0;
-      var a = 1.0 * this.intensity;
-      ctx.fillStyle = "rgba(" + r + ", " + g + "," + b + "," + a + ")";
+      ctx.fillStyle = "rgba(" + this.r + ", " + this.g + "," + this. b + "," + 1.0 * this.intensity + ")";
       ctx.fillText(this.str, this.x, this.y);
     };
 };
@@ -49,6 +48,7 @@ Queue = function() {
 
 Fingerspelling = function() {
     var intervalId;
+    var options;
 
     var canvas;
     var ctx;
@@ -73,7 +73,8 @@ Fingerspelling = function() {
                 }
                 var letter = String.fromCharCode(val);
                 thing.init(touch.canvasX + offX,
-                           touch.canvasY + offY, 0, 0, letter, 1.0);
+                           touch.canvasY + offY, 0, 0, letter, 1.0,
+                           options.red, options.green, options.blue);
                 queues[touchNum].enqueue(thing);
             }
         }
@@ -89,9 +90,13 @@ Fingerspelling = function() {
         }
     };
 
-    this.init = function(c, imgUrl) {
+    this.init = function(c, opts) {
       canvas = c;
       c.left = 0;
+      options = opts || {};
+      options.red = options.red || 0;
+      options.green = options.green || 0;
+      options.blue = options.blue || 0;
 
       var resizeCanvas = function(e) {
           canvas.width =
