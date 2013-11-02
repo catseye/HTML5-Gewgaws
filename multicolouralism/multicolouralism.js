@@ -1,7 +1,7 @@
 Multicolouralism = function() {
     var canvas;
     var ctx;
-    var intervalId;
+    var request;
     var rows;
     var cols;
     var radius;
@@ -74,9 +74,9 @@ Multicolouralism = function() {
 
         var animFrame = function(time) {
             $this.draw();
-            requestAnimationFrame(animFrame);
+            request = requestAnimationFrame(animFrame);
         };
 
-        requestAnimationFrame(animFrame);
+        request = requestAnimationFrame(animFrame);
     };
 }

@@ -1,6 +1,6 @@
 PrairieController = function() {
     var canvas;
-    var interval_id;
+    var request;
 
     var img = new Image();
     var shapes = new Array();
@@ -43,18 +43,22 @@ PrairieController = function() {
             shapes[i] = {};
             new_shape(i);
         }
-        var self = this;
+        var $this = this;
         img.onload = function() {
-            self.draw();
-            interval_id = setInterval(self.draw, 20);
+            $this.draw();
+            var animFrame = function(time) {
+                $this.draw();
+                request = requestAnimationFrame(animFrame);
+            };
+            request = requestAnimationFrame(animFrame);
         }
         img.src = imgurl;
     }
 
     this.stop = function() {
-        if (interval_id === undefined)
+        if (request === undefined)
             return;
-        clearInterval(interval_id);
-        interval_id = undefined;
+        cancelRequestAnimationFrame(request);
+        request = undefined;
     }
 }

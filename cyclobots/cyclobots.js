@@ -67,7 +67,7 @@ Cyclobot = function() {
 };
   
 Cyclobots = function() {
-    var interval_id = undefined;
+    var request = undefined;
     var ctx = undefined;
     var canvas = undefined;
     var selected = undefined;
@@ -153,7 +153,12 @@ Cyclobots = function() {
             e.preventDefault();
         });
 
-        interval_id = setInterval(this.draw, 25);
+        var $this = this;
+        var animFrame = function(time) {
+            $this.draw();
+            request = requestAnimationFrame(animFrame);
+        };
+        request = requestAnimationFrame(animFrame);
     };
 
     this.selectABot = function(can_x, can_y) {

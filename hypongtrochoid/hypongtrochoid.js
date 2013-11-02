@@ -78,7 +78,7 @@ Hypongtrochoid = function() {
     var overlayCanvas;
     var ctx;
     var overlayCtx;
-    var intervalId;
+    var request;
 
     var manager = new yoob.SpriteManager();
 
@@ -98,7 +98,6 @@ Hypongtrochoid = function() {
         manager.init(canvas);
         ctx = canvas.getContext('2d');
         overlayCtx = overlayCanvas.getContext('2d');
-        var self = this;
 
         var outside = new Rectangle();
         outside.init(0, 0, 0, 0, canvas.width, canvas.height, '', undefined, null);
@@ -116,6 +115,11 @@ Hypongtrochoid = function() {
         yellowRectangle.scrawlOn = overlayCtx;
         manager.addSprite(yellowRectangle);
 
-        intervalId = setInterval(function() { self.draw(); }, 16);
+        var $this = this;
+        var animFrame = function(time) {
+            $this.draw();
+            request = requestAnimationFrame(animFrame);
+        };
+        request = requestAnimationFrame(animFrame);
     };
 }

@@ -1,7 +1,7 @@
 function ProgressionController(canvas) {
     var self = {};
     var counter;
-    var interval_id;
+    var request;
 
     self.draw = function() {
       var ctx = canvas.getContext('2d');
@@ -29,7 +29,11 @@ function ProgressionController(canvas) {
     self.start = function() {
       counter = 1;
       self.draw();
-      interval_id = setInterval(self.draw, 50);
+      var animFrame = function(time) {
+          self.draw();
+          request = requestAnimationFrame(animFrame);
+      };
+      request = requestAnimationFrame(animFrame);
     };
 
     return self;

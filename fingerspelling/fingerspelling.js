@@ -47,7 +47,7 @@ Queue = function() {
 };
 
 Fingerspelling = function() {
-    var intervalId;
+    var request;
     var options;
 
     var canvas;
@@ -154,7 +154,11 @@ Fingerspelling = function() {
           e.preventDefault();
       });
 
-      var self = this;
-      intervalId = setInterval(self.draw, 20);
+      var $this = this;
+      var animFrame = function(time) {
+          $this.draw();
+          request = requestAnimationFrame(animFrame);
+      };
+      request = requestAnimationFrame(animFrame);
     };
 };

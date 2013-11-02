@@ -1,7 +1,7 @@
 HirsuteMiasma = function() {
     var canvas;
     var ctx;
-    var intervalId;
+    var request;
 
     var x;
     var y;
@@ -75,6 +75,11 @@ HirsuteMiasma = function() {
         canvas = c;
         ctx = canvas.getContext('2d');
         this.draw();
-        intervalId = setInterval(this.draw, 50);
+        var $this = this;
+        var animFrame = function(time) {
+            $this.draw();
+            request = requestAnimationFrame(animFrame);
+        };
+        request = requestAnimationFrame(animFrame);
     }
 }

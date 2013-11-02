@@ -107,7 +107,7 @@ function shuffle(array) {
 NonRandomWalk = function() {
     var canvas;
     var ctx;
-    var intervalId;
+    var request;
 
     var manager;
 
@@ -197,6 +197,11 @@ NonRandomWalk = function() {
 
         this.reset();
 
-        intervalId = setInterval(function() { self.draw(); }, 33);
+        var $this = this;
+        var animFrame = function(time) {
+            $this.draw();
+            request = requestAnimationFrame(animFrame);
+        };
+        request = requestAnimationFrame(animFrame);
     };
 }

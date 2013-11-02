@@ -85,7 +85,7 @@ Floater.prototype = new yoob.Sprite();
 
 HeronsisHermnonicii = function() {
     var ctx;
-    var intervalId;
+    var request;
 
     var manager;
     var landscape = [];
@@ -127,7 +127,6 @@ HeronsisHermnonicii = function() {
     this.init = function(c) {
         canvas = c;
         ctx = canvas.getContext('2d');
-        var self = this;
 
         manager = new yoob.SpriteManager();
         manager.init(canvas);
@@ -152,6 +151,11 @@ HeronsisHermnonicii = function() {
             treescape[i] = canvas.height * 0.75 + (Math.random() * 60 - 30);
         }
 
-        intervalId = setInterval(function() { self.draw(); }, 33);
+        var $this = this;
+        var animFrame = function(time) {
+            $this.draw();
+            request = requestAnimationFrame(animFrame);
+        };
+        request = requestAnimationFrame(animFrame);
     };
 }
