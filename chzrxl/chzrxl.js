@@ -44,10 +44,14 @@ Chzrxl = function() {
     var info;
     var numBalls = 200;
     var pctToHoldFixedCtrl;
+    var options;
+    var percentToHoldFixed;
 
     var t = 0;
 
-    this.init = function(c) {
+    this.init = function(c, opts) {
+        options = opts || {};
+        percentToHoldFixed = options.percentToHoldFixed || 10;
         canvas = c;
         ctx = canvas.getContext("2d");
         info = document.getElementById('info');
@@ -89,12 +93,16 @@ Chzrxl = function() {
             balls[i].draw(ctx, t);
         }
 
-        var numFixed = balls.length * (pctToHoldFixedCtrl.value / 100);
+        var p = percentToHoldFixed;
+        if (pctToHoldFixedCtrl) {
+            p = pctToHoldFixedCtrl.value;
+        }
+        var numFixed = balls.length * (p / 100);
         for (var i = 0; i < balls.length; i++) {
             if (i < numFixed) continue;
             balls[i].updateXY(balls[i].getPct(t));
         }
-        
+
         t += 1;
     };
 };
