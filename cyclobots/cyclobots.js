@@ -186,7 +186,7 @@ Cyclobots = function() {
             bot.move();
             bot.adjust();
             bot.draw(ctx);
-            if (show_angles !== undefined && show_angles.checked) {
+            if (show_angles && show_angles.checked) {
                 bot.drawAngles(ctx);
             }
         }
