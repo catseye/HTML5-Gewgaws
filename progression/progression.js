@@ -1,9 +1,9 @@
-function ProgressionController(canvas) {
-    var self = {};
+function ProgressionController() {
     var counter;
     var request;
+    var canvas;
 
-    self.draw = function() {
+    this.draw = function() {
       var ctx = canvas.getContext('2d');
 
       document.getElementById('counter').innerHTML = Math.floor(counter);
@@ -26,15 +26,16 @@ function ProgressionController(canvas) {
       counter += 0.5;
     };
 
-    self.start = function() {
+    this.start = function(c) {
+      canvas = c;
       counter = 1;
-      self.draw();
+      this.draw();
+      var $this = this;
       var animFrame = function(time) {
-          self.draw();
+          $this.draw();
           request = requestAnimationFrame(animFrame);
       };
       request = requestAnimationFrame(animFrame);
     };
-
-    return self;
 }
+
