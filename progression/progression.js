@@ -3,10 +3,14 @@ function ProgressionController() {
     var request;
     var canvas;
 
-    this.draw = function() {
+    this.draw = function(timeElapsed) {
       var ctx = canvas.getContext('2d');
 
-      document.getElementById('counter').innerHTML = Math.floor(counter);
+      var counter_elem = document.getElementById('counter');
+      if (counter_elem) {
+          counter_elem.innerHTML = Math.floor(counter);
+              // + "<br/>" + timeElapsed;
+      }
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -23,19 +27,21 @@ function ProgressionController() {
       ctx.lineTo(canvas.width,0);
       ctx.stroke();
 
-      counter += 0.5;
+      counter += timeElapsed / 45.0;
     };
 
     this.start = function(c) {
       canvas = c;
       counter = 1;
-      this.draw();
       var $this = this;
+      var lastTime = null;
       var animFrame = function(time) {
-          $this.draw();
-          request = requestAnimationFrame(animFrame);
+          var timeElapsed = lastTime == null ? 0 : time - lastTime;
+          lastTime = time;
+          $this.draw(timeElapsed);
+          requestAnimationFrame(animFrame);
       };
-      request = requestAnimationFrame(animFrame);
+      requestAnimationFrame(animFrame);
     };
 }
 
