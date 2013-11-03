@@ -51,7 +51,7 @@ PrairieController = function() {
                 request = requestAnimationFrame(animFrame);
             };
             request = requestAnimationFrame(animFrame);
-        }
+        };
         img.src = imgurl;
     }
 
