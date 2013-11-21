@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>The Frame (HTML5) | Cat's Eye Technologies</title>
+  <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+#canvas { background: white; display: none;}
+#container { display: none; }
+body { background-image: none; }
+  </style>
+</head>
+<body>
+
+<h1>The Frame (HTML5)</h1>
+
+<div style="width: 100%; text-align: center;" id="container">
+<small>Note 1. Green things can be dragged. Note 2. Due to technical limitations,
+things cannot be dragged off of the computer screen</small>
+</div>
+<canvas id="canvas" width="800" height="450">
+Your browser doesn't support displaying an HTML5 canvas.
+</canvas>
+<div style="width: 100%; text-align: center;" id="please_wait">
+Please wait, loading...
+</div>
+
+<script src="../common-yoob.js-0.5/animation-frame.js"></script>
+<script src="../common-yoob.js-0.5/sprite-manager.js"></script>
+<script src="the-frame.js"></script>
+<script>
+  var canvas = document.getElementById('canvas');
+  var container = document.getElementById('container');
+  var please_wait = document.getElementById('please_wait');
+  please_wait.style.display = "none";
+  container.style.display = "block";
+  canvas.style.display = "block";
+  canvas.width = document.documentElement.clientWidth - canvas.offsetLeft * 2;
+  //canvas.height = document.documentElement.clientHeight - canvas.offsetTop - 5;
+  var f = new TheFrame();
+  f.init(canvas, 'the-frame.png', function() {});
+</script>
+</body>
