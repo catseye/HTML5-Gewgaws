@@ -154,18 +154,36 @@ Cyclobots = function() {
         });
 
         var $this = this;
+        var lastTime = null;
+        var accumDelta = 0;
+        var frameTime = 1000.0 / 60.0;
         var animFrame = function(time) {
             $this.draw();
+            if (lastTime === null) {
+                lastTime = time;
+            }
+            accumDelta += (time - lastTime);
+            /*
+            var status = document.getElementById('status');
+            if (status) {
+                status.innerHTML = accumDelta;
+            }
+            */
+            while (accumDelta > frameTime) {
+                accumDelta -= frameTime;
+                $this.update();
+            }
+            lastTime = time;
             request = requestAnimationFrame(animFrame);
         };
         request = requestAnimationFrame(animFrame);
     };
 
-    this.selectABot = function(can_x, can_y) {
+    this.selectABot = function(canvasX, canvasY) {
         var selected = undefined;
         for (var i = 0; i < numbots; i++) {
-            if (Math.abs(can_x - bots[i].x) < bots[i].radius &&
-                Math.abs(can_y - bots[i].y) < bots[i].radius) {
+            if (Math.abs(canvasX - bots[i].x) < bots[i].radius &&
+                Math.abs(canvasY - bots[i].y) < bots[i].radius) {
                 selected = i;
                 break;
             }
@@ -183,12 +201,18 @@ Cyclobots = function() {
 
         for (var i = 0; i < bots.length; i++) {
             var bot = bots[i];
-            bot.move();
-            bot.adjust();
             bot.draw(ctx);
             if (show_angles && show_angles.checked) {
                 bot.drawAngles(ctx);
             }
+        }
+    };
+
+    this.update = function() {
+        for (var i = 0; i < bots.length; i++) {
+            var bot = bots[i];
+            bot.move();
+            bot.adjust();
         }
     };
 
