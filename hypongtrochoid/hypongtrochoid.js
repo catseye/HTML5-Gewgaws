@@ -84,8 +84,10 @@ Hypongtrochoid = function() {
 
     this.draw = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         manager.draw(ctx);
+    };
+
+    this.update = function() {
         var n = turbo.checked ? 10 : 1;
         for (var i = 0; i < n; i++) {
             manager.move();
@@ -116,8 +118,20 @@ Hypongtrochoid = function() {
         manager.addSprite(yellowRectangle);
 
         var $this = this;
+        var lastTime = null;
+        var accumDelta = 0;
+        var frameTime = 1000.0 / 60.0;
         var animFrame = function(time) {
             $this.draw();
+            if (lastTime === null) {
+                lastTime = time;
+            }
+            accumDelta += (time - lastTime);
+            while (accumDelta > frameTime) {
+                accumDelta -= frameTime;
+                $this.update();
+            }
+            lastTime = time;
             request = requestAnimationFrame(animFrame);
         };
         request = requestAnimationFrame(animFrame);

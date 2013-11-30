@@ -163,12 +163,6 @@ Cyclobots = function() {
                 lastTime = time;
             }
             accumDelta += (time - lastTime);
-            /*
-            var status = document.getElementById('status');
-            if (status) {
-                status.innerHTML = accumDelta;
-            }
-            */
             while (accumDelta > frameTime) {
                 accumDelta -= frameTime;
                 $this.update();
