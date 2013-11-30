@@ -5,7 +5,7 @@ HirsuteMiasma = function() {
 
     var x;
     var y;
-    var v;  // darkness
+    var v = 255;  // darkness
     var theta = 0;  // in degrees
     var dist = 5;
     var tick = 0;
@@ -22,18 +22,6 @@ HirsuteMiasma = function() {
 
         ctx.beginPath();
         ctx.lineWidth = 2;
-        var prevV = v;
-        v = Math.floor((Math.cos(tick / 250) + 1) * 128);
-        if (status) status.innerHTML = v;
-      
-        if ((prevV === 1 && v === 0) || (prevV === 254 && v === 255)) {
-            grab = 350;
-        }
-
-        if (flickMode) {
-            if (prevV === 255) v = 0; else v = 255;
-        }
-          
         ctx.strokeStyle = "rgb(" + v +"," + v + "," + v + ")";
         ctx.moveTo(x, y);
         while (!(x < 0 || x > canvas.width || y < 0 || y > canvas.height)) {
@@ -57,6 +45,20 @@ HirsuteMiasma = function() {
             }
         }
         ctx.stroke();
+    };
+
+    this.update = function() {
+        var prevV = v;
+        v = Math.floor((Math.cos(tick / 250) + 1) * 128);
+        if (status) status.innerHTML = v;
+      
+        if ((prevV === 1 && v === 0) || (prevV === 254 && v === 255)) {
+            grab = 350;
+        }
+
+        if (flickMode) {
+            if (prevV === 255) v = 0; else v = 255;
+        }
 
         if (cycle) flickMode = cycle.checked;
         if (!flickMode) {
@@ -69,17 +71,11 @@ HirsuteMiasma = function() {
               }
             }
         }
-    }
+    };
 
     this.start = function(c) {
         canvas = c;
         ctx = canvas.getContext('2d');
-        this.draw();
-        var $this = this;
-        var animFrame = function(time) {
-            $this.draw();
-            request = requestAnimationFrame(animFrame);
-        };
-        request = requestAnimationFrame(animFrame);
-    }
-}
+        yoob.setUpQuantumAnimationFrame(this);
+    };
+};
