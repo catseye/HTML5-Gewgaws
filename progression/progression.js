@@ -1,11 +1,9 @@
 function ProgressionController() {
     var counter;
-    var request;
     var canvas;
+    var ctx;
 
     this.draw = function(timeElapsed) {
-      var ctx = canvas.getContext('2d');
-
       var counter_elem = document.getElementById('counter');
       if (counter_elem) {
           counter_elem.innerHTML = Math.floor(counter);
@@ -32,16 +30,9 @@ function ProgressionController() {
 
     this.start = function(c) {
       canvas = c;
+      ctx = canvas.getContext('2d');
       counter = 1;
-      var $this = this;
-      var lastTime = null;
-      var animFrame = function(time) {
-          var timeElapsed = lastTime == null ? 0 : time - lastTime;
-          lastTime = time;
-          $this.draw(timeElapsed);
-          requestAnimationFrame(animFrame);
-      };
-      requestAnimationFrame(animFrame);
+      yoob.setUpProportionalAnimationFrame(this);
     };
 }
 

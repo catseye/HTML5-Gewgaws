@@ -1,7 +1,7 @@
 PrairieController = function() {
     var canvas;
     var ctx;
-    var request;
+    var animCfg = {};
 
     var img = new Image();
     var shapes = new Array();
@@ -14,7 +14,7 @@ PrairieController = function() {
         shapes[i].y = Math.floor(Math.random() * (canvas.height - size));
         shapes[i].v = Math.random() * 8 + 1;
         shapes[i].alpha = Math.random() * 0.66;
-    }
+    };
 
     this.draw = function(timeElapsed) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -33,7 +33,7 @@ PrairieController = function() {
                 new_shape(i);
             }
         }
-    }
+    };
 
     this.start = function(c, imgurl) {
         canvas = c;
@@ -44,22 +44,15 @@ PrairieController = function() {
         }
         var $this = this;
         img.onload = function() {
-            var lastTime = null;
-            var animFrame = function(time) {
-                var timeElapsed = lastTime == null ? 0 : time - lastTime;
-                lastTime = time;
-                $this.draw(timeElapsed);
-                request = requestAnimationFrame(animFrame);
-            };
-            request = requestAnimationFrame(animFrame);
+            yoob.setUpProportionalAnimationFrame($this, animCfg);
         };
         img.src = imgurl;
-    }
+    };
 
     this.stop = function() {
-        if (request === undefined)
+        if (!animCfg.request)
             return;
-        cancelRequestAnimationFrame(request);
-        request = undefined;
-    }
+        cancelRequestAnimationFrame(animCfg.request);
+        animCfg.request = undefined;
+    };
 }
