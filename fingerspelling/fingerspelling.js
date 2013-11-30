@@ -55,7 +55,7 @@ Fingerspelling = function() {
     var queues = [new Queue().init(), new Queue().init()];
     var touches = [undefined, undefined];
 
-    this.draw = function() {
+    this.update = function() {
         for (var touchNum = 0; touchNum <= 1; touchNum++) {
             var touch = touches[touchNum];
             if (touch === undefined) continue;
@@ -78,11 +78,15 @@ Fingerspelling = function() {
                 queues[touchNum].enqueue(thing);
             }
         }
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var touchNum = 0; touchNum <= 1; touchNum++) {
+            queues[touchNum].fade(0.05);
+        }
+    };
 
+    this.draw = function() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         for (var touchNum = 0; touchNum <= 1; touchNum++) {
             queues[touchNum].draw(ctx);
-            queues[touchNum].fade(0.05);
         }
         var e = document.getElementById('status');
         if (e) {
@@ -154,11 +158,6 @@ Fingerspelling = function() {
           e.preventDefault();
       });
 
-      var $this = this;
-      var animFrame = function(time) {
-          $this.draw();
-          request = requestAnimationFrame(animFrame);
-      };
-      request = requestAnimationFrame(animFrame);
+      yoob.setUpQuantumAnimationFrame(this);
     };
 };
