@@ -56,13 +56,8 @@ Chzrxl = function() {
         ctx = canvas.getContext("2d");
         info = document.getElementById('info');
         pctToHoldFixedCtrl = document.getElementById('hold_fixed');
-        var $this = this;
         this.restart();
-        var animFrame = function(time) {
-            $this.draw();
-            requestAnimationFrame(animFrame);
-        };
-        requestAnimationFrame(animFrame);
+        yoob.setUpQuantumAnimationFrame(this);
     };
 
     this.restart = function() {
@@ -92,7 +87,9 @@ Chzrxl = function() {
         for (var i = 0; i < balls.length; i++) {
             balls[i].draw(ctx, t);
         }
+    };
 
+    this.update = function() {
         var p = percentToHoldFixed;
         if (pctToHoldFixedCtrl) {
             p = pctToHoldFixedCtrl.value;
