@@ -62,7 +62,7 @@ Floater = function() {
     };
     
     this.move = function() {
-        this.counter += this.rate;
+        this.counter += this.rate * 0.66;
         if (this.rate > 0.07) this.rate -= 0.01;
     };
 
@@ -121,6 +121,9 @@ HeronsisHermnonicii = function() {
 
         // draw sprites
         manager.draw(ctx);
+    };
+
+    this.update = function() {
         manager.move();
     };
 
@@ -151,11 +154,8 @@ HeronsisHermnonicii = function() {
             treescape[i] = canvas.height * 0.75 + (Math.random() * 60 - 30);
         }
 
-        var $this = this;
-        var animFrame = function(time) {
-            $this.draw();
-            request = requestAnimationFrame(animFrame);
-        };
-        request = requestAnimationFrame(animFrame);
+        // TODO might be better with a ProportionalAnimationFrame,
+        // but yoob.Sprite needs to support that better first
+        yoob.setUpQuantumAnimationFrame(this);
     };
 }
