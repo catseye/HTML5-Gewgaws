@@ -25,14 +25,7 @@ FibonacciSpiral = function() {
         canvas = c;
         ctx = canvas.getContext("2d");
         info = document.getElementById('info');
-        var $this = this;
-
-        var animFrame = function(time) {
-            $this.draw();
-            requestAnimationFrame(animFrame);
-        };
-
-        requestAnimationFrame(animFrame);
+        yoob.setUpQuantumAnimationFrame(this);
     };
 
     this.draw = function() {
@@ -85,12 +78,14 @@ FibonacciSpiral = function() {
             y += sign * radius;
         }
         ctx.restore();
+        if (info) {
+            info.innerHTML = "Factor: " + factor + ", alpha=" + alpha;
+        }
+    };
 
+    this.update = function() {
         factor -= 0.01; // rate;
-        //rate += 0.0001;
-
-        info.innerHTML = "Factor: " + factor + ", alpha=" + alpha;
-  
+        //rate += 0.0001;  
         //factor = triangle(1, 10, 100, counter);
         factor = 20 * (Math.cos(counter / 100) + 1.001);
         counter += 0.3;
