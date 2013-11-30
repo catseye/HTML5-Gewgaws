@@ -29,3 +29,28 @@ window.cancelRequestAnimationFrame =
     window.oCancelRequestAnimationFrame ||
     window.msCancelRequestAnimationFrame ||
     clearTimeout;
+
+/*
+ * Convenience function for using requestAnimationFrame.  Calls the
+ * object's draw() method on each frame, and calls update() as necessary.
+ */
+yoob.setUpQuantumAnimationFrame = function(object, cfg) {
+    cfg = cfg || {};
+    cfg.lastTime = cfg.lastTime || null;
+    cfg.accumDelta = cfg.accumDelta || 0;
+    cfg.frameTime = cfg.frameTime || (1000.0 / 60.0);
+    var animFrame = function(time) {
+        object.draw();
+        if (cfg.lastTime === null) {
+            cfg.lastTime = time;
+        }
+        cfg.accumDelta += (time - cfg.lastTime);
+        while (cfg.accumDelta > cfg.frameTime) {
+            cfg.accumDelta -= cfg.frameTime;
+            object.update();
+        }
+        cfg.lastTime = time;
+        cfg.request = requestAnimationFrame(animFrame);
+    };
+    cfg.request = requestAnimationFrame(animFrame);
+};

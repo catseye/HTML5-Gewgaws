@@ -67,7 +67,6 @@ Cyclobot = function() {
 };
   
 Cyclobots = function() {
-    var request = undefined;
     var ctx = undefined;
     var canvas = undefined;
     var selected = undefined;
@@ -153,24 +152,7 @@ Cyclobots = function() {
             e.preventDefault();
         });
 
-        var $this = this;
-        var lastTime = null;
-        var accumDelta = 0;
-        var frameTime = 1000.0 / 60.0;
-        var animFrame = function(time) {
-            $this.draw();
-            if (lastTime === null) {
-                lastTime = time;
-            }
-            accumDelta += (time - lastTime);
-            while (accumDelta > frameTime) {
-                accumDelta -= frameTime;
-                $this.update();
-            }
-            lastTime = time;
-            request = requestAnimationFrame(animFrame);
-        };
-        request = requestAnimationFrame(animFrame);
+        yoob.setUpQuantumAnimationFrame(this);
     };
 
     this.selectABot = function(canvasX, canvasY) {
