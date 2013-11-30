@@ -134,7 +134,6 @@ NonRandomWalk = function() {
 
         // draw sprites
         manager.draw(ctx);
-        manager.move();
 
         // draw target
         ctx.strokeStyle = "blue";
@@ -155,6 +154,10 @@ NonRandomWalk = function() {
             ctx.lineTo(originX + history[i], y + i * 10);
         }
         ctx.stroke();
+    };
+
+    this.update = function() {
+        manager.move();
     };
 
     this.reset = function() {
@@ -196,12 +199,6 @@ NonRandomWalk = function() {
         manager.addSprite(indicator);
 
         this.reset();
-
-        var $this = this;
-        var animFrame = function(time) {
-            $this.draw();
-            request = requestAnimationFrame(animFrame);
-        };
-        request = requestAnimationFrame(animFrame);
+        yoob.setUpQuantumAnimationFrame(this);
     };
 }
