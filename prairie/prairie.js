@@ -1,5 +1,6 @@
 PrairieController = function() {
     var canvas;
+    var ctx;
     var request;
 
     var img = new Image();
@@ -15,11 +16,8 @@ PrairieController = function() {
         shapes[i].alpha = Math.random() * 0.66;
     }
 
-    this.draw = function() {
-        var ctx = canvas.getContext('2d');
-
+    this.draw = function(timeElapsed) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
         ctx.drawImage(img, 0, 0);
 
         for (var i = 0; i < NUM_SHAPES; i++) {
@@ -30,7 +28,7 @@ PrairieController = function() {
             ctx.lineTo(shapes[i].x, shapes[i].y + shapes[i].w);
             ctx.closePath();
             ctx.fill();
-            shapes[i].x += shapes[i].v;
+            shapes[i].x += shapes[i].v * (timeElapsed / (1000.0 / 60.0));
             if (shapes[i].x > canvas.width) {
                 new_shape(i);
             }
@@ -39,15 +37,18 @@ PrairieController = function() {
 
     this.start = function(c, imgurl) {
         canvas = c;
+        ctx = canvas.getContext('2d');
         for (var i = 0; i < NUM_SHAPES; i++) {
             shapes[i] = {};
             new_shape(i);
         }
         var $this = this;
         img.onload = function() {
-            $this.draw();
+            var lastTime = null;
             var animFrame = function(time) {
-                $this.draw();
+                var timeElapsed = lastTime == null ? 0 : time - lastTime;
+                lastTime = time;
+                $this.draw(timeElapsed);
                 request = requestAnimationFrame(animFrame);
             };
             request = requestAnimationFrame(animFrame);

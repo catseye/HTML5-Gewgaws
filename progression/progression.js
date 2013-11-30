@@ -27,7 +27,7 @@ function ProgressionController() {
       ctx.lineTo(canvas.width,0);
       ctx.stroke();
 
-      counter += timeElapsed / 45.0;
+      counter += timeElapsed / 60.0;
     };
 
     this.start = function(c) {
