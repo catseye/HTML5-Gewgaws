@@ -152,7 +152,10 @@ Cyclobots = function() {
             e.preventDefault();
         });
 
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({
+            object: this
+        });
+        this.animation.start();
     };
 
     this.selectABot = function(canvasX, canvasY) {
