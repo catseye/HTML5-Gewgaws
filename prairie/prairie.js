@@ -42,17 +42,15 @@ PrairieController = function() {
             shapes[i] = {};
             new_shape(i);
         }
+        this.animation = (new yoob.Animation()).init({ object: this });
         var $this = this;
         img.onload = function() {
-            yoob.setUpProportionalAnimationFrame($this, animCfg);
+            $this.animation.start();
         };
         img.src = imgurl;
     };
 
     this.stop = function() {
-        if (!animCfg.request)
-            return;
-        cancelRequestAnimationFrame(animCfg.request);
-        animCfg.request = undefined;
+        this.animation.stop();
     };
 }
