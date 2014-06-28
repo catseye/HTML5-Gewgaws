@@ -199,6 +199,9 @@ NonRandomWalk = function() {
         manager.addSprite(indicator);
 
         this.reset();
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({
+            object: this
+        });
+        this.animation.start();
     };
 }

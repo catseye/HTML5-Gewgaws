@@ -156,6 +156,9 @@ HeronsisHermnonicii = function() {
 
         // TODO might be better with a ProportionalAnimationFrame,
         // but yoob.Sprite needs to support that better first
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({
+            object: this
+        });
+        this.animation.start();
     };
 }

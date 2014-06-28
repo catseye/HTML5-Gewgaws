@@ -77,6 +77,9 @@ TheFrame = function() {
       }
     };
 
+    this.update = function() {
+    };
+
     this.init = function(c, imgUrl, callback) {
       canvas = c;
       ctx = canvas.getContext("2d");
@@ -96,11 +99,10 @@ TheFrame = function() {
           mkHandle(30, canvas.height - 60, 30, 30);
           getFontHeight();
           $this.draw();
-          var animFrame = function(time) {
-              $this.draw();
-              request = requestAnimationFrame(animFrame);
-          };
-          request = requestAnimationFrame(animFrame);
+          $this.animation = (new yoob.Animation()).init({
+              object: $this
+          });
+          $this.animation.start();
       }
       img.src = imgUrl;
     };

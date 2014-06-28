@@ -72,11 +72,11 @@ Multicolouralism = function() {
 
         radius = (canvas.height / rows) / 2;
 
+        // we request each successive animation frame AS FAST AS POSSIBLE
         var animFrame = function(time) {
             $this.draw();
             request = requestAnimationFrame(animFrame);
         };
-
         request = requestAnimationFrame(animFrame);
     };
 }

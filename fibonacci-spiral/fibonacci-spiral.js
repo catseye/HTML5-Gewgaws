@@ -25,7 +25,10 @@ FibonacciSpiral = function() {
         canvas = c;
         ctx = canvas.getContext("2d");
         info = document.getElementById('info');
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({
+            object: this
+        });
+        this.animation.start();
     };
 
     this.draw = function() {

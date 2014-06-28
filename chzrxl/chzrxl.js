@@ -57,7 +57,10 @@ Chzrxl = function() {
         info = document.getElementById('info');
         pctToHoldFixedCtrl = document.getElementById('hold_fixed');
         this.restart();
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({
+            object: this
+        });
+        this.animation.start();
     };
 
     this.restart = function() {

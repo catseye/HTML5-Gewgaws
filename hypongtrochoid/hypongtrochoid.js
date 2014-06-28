@@ -116,6 +116,9 @@ Hypongtrochoid = function() {
         yellowRectangle.scrawlOn = overlayCtx;
         manager.addSprite(yellowRectangle);
 
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({
+            object: this
+        });
+        this.animation.start();
     };
 }
