@@ -42,7 +42,10 @@ PrairieController = function() {
             shapes[i] = {};
             new_shape(i);
         }
-        this.animation = (new yoob.Animation()).init({ object: this });
+        this.animation = (new yoob.Animation()).init({
+            object: this,
+            mode: 'proportional'
+        });
         var $this = this;
         img.onload = function() {
             $this.animation.start();

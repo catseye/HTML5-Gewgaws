@@ -32,7 +32,10 @@ function ProgressionController() {
       canvas = c;
       ctx = canvas.getContext('2d');
       counter = 1;
-      this.animation = (new yoob.Animation()).init({ object: this });
+      this.animation = (new yoob.Animation()).init({
+          object: this,
+          mode: 'proportional'
+      });
       this.animation.start();
     };
 }
