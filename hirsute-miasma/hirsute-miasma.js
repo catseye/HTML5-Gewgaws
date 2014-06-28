@@ -76,6 +76,7 @@ HirsuteMiasma = function() {
     this.start = function(c) {
         canvas = c;
         ctx = canvas.getContext('2d');
-        yoob.setUpQuantumAnimationFrame(this);
+        this.animation = (new yoob.Animation()).init({ object: this });
+        this.animation.start();
     };
 };
