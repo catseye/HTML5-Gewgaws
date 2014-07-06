@@ -4,8 +4,8 @@ function ProgressionController() {
     var ctx;
 
     this.draw = function(timeElapsed) {
-      if (counter_elem) {
-          counter_elem.innerHTML = Math.floor(counter);
+      if (this.counter_elem) {
+          this.counter_elem.innerHTML = Math.floor(counter);
       }
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.beginPath();
