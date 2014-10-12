@@ -3,7 +3,7 @@ var x;
 
 var walker;
 var indicator;
-var history;
+var cardHistory;
 
 var cardsRemaining;
 
@@ -70,7 +70,7 @@ Card = function(color, faceUp) {
         }
         // new dist, will be set on indicator when walker finishes
         walker.dist = Math.abs(x) / 2;
-        history.push(x);
+        cardHistory.push(x);
         walker.setDestination(originX + x - walker.getWidth() / 2, walker.getY(), 30);
         this.faceUp = true;
         cardsRemaining--;
@@ -149,9 +149,9 @@ NonRandomWalk = function() {
         ctx.strokeStyle = "black";
         ctx.lineWidth = 1;
         ctx.beginPath();
-        ctx.moveTo(originX + history[0], y);
-        for (var i = 1; i < history.length; i++) {
-            ctx.lineTo(originX + history[i], y + i * 10);
+        ctx.moveTo(originX + cardHistory[0], y);
+        for (var i = 1; i < cardHistory.length; i++) {
+            ctx.lineTo(originX + cardHistory[i], y + i * 10);
         }
         ctx.stroke();
     };
@@ -165,7 +165,7 @@ NonRandomWalk = function() {
         y = 100;
         targetX = 23.73046875 * (x / 100);
         originX = canvas.width / 8;
-        history = [x];
+        cardHistory = [x];
         cardsRemaining = 10;
         var deck = [];
         for (var i = 0; i < 10; i++) {
