@@ -1,3 +1,21 @@
+function launch() {
+    var deps = [
+        "../common-yoob.js-0.6/animation.js"
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                var t = new Chzrxl();
+                t.init(document.getElementById('canvas'));
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 var twopi = Math.PI * 2;
 var degrees = twopi / 360;
 
