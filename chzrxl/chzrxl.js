@@ -1,4 +1,26 @@
-function launch() {
+/*
+<br>% to hold fixed:
+<input id="hold_fixed" type="range" min="0" max="100" value="5"/>
+*/
+
+function makeCanvas(container, id, width, height) {
+    var canvas = document.createElement('canvas');
+    canvas.id = id;
+    canvas.width = width;
+    canvas.height = height;
+    container.appendChild(canvas);
+    return canvas;
+}
+
+function makeButton(container, name, label) {
+    var button = document.createElement('button');
+    button.id = 'btn_' + name;
+    button.innerHTML = label;
+    container.appendChild(button);
+    return button;
+}
+
+function launch(container) {
     var deps = [
         "../common-yoob.js-0.6/animation.js"
     ];
@@ -8,8 +30,14 @@ function launch() {
         elem.src = deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
+                container = document.getElementById('container');
+                var canvas = makeCanvas(container, 'canvas', 500, 500);
+                var button = makeButton(container, 'restart', 'Restart');
                 var t = new Chzrxl();
-                t.init(document.getElementById('canvas'));
+                t.init({
+                    'canvas': canvas,
+                    'button': button
+                });
             }
         };
         document.body.appendChild(elem);
@@ -59,7 +87,6 @@ Ball = function() {
 Chzrxl = function() {
     var ctx = undefined;
     var canvas = undefined;
-    var info;
     var numBalls = 200;
     var pctToHoldFixedCtrl;
     var options;
@@ -67,12 +94,19 @@ Chzrxl = function() {
 
     var t = 0;
 
-    this.init = function(c, opts) {
+    this.init = function(opts) {
         options = opts || {};
-        percentToHoldFixed = options.percentToHoldFixed || 10;
-        canvas = c;
+
+        canvas = opts.canvas;
         ctx = canvas.getContext("2d");
-        info = document.getElementById('info');
+
+        button = opts.button;
+        var $this = this;
+        button.onclick = function() {
+            $this.restart();
+        };
+
+        percentToHoldFixed = options.percentToHoldFixed || 10;
         pctToHoldFixedCtrl = document.getElementById('hold_fixed');
         this.restart();
         this.animation = (new yoob.Animation()).init({
