@@ -1,27 +1,10 @@
 /*
 <br>% to hold fixed:
-<input id="hold_fixed" type="range" min="0" max="100" value="5"/>
 */
-
-function makeCanvas(container, id, width, height) {
-    var canvas = document.createElement('canvas');
-    canvas.id = id;
-    canvas.width = width;
-    canvas.height = height;
-    container.appendChild(canvas);
-    return canvas;
-}
-
-function makeButton(container, name, label) {
-    var button = document.createElement('button');
-    button.id = 'btn_' + name;
-    button.innerHTML = label;
-    container.appendChild(button);
-    return button;
-}
 
 function launch(container) {
     var deps = [
+        "../common-yoob.js-0.6/element-factory.js",
         "../common-yoob.js-0.6/animation.js"
     ];
     var loaded = 0;
@@ -31,12 +14,17 @@ function launch(container) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 container = document.getElementById('container');
-                var canvas = makeCanvas(container, 'canvas', 500, 500);
-                var button = makeButton(container, 'restart', 'Restart');
+                var canvas = yoob.makeCanvas(container, 500, 500);
+                canvas.style.display = "inline-block";
+                container.appendChild(document.createElement('br'));
+                var button = yoob.makeButton(container, 'Restart');
+                container.appendChild(document.createTextNode("Percent to hold fixed:"));
+                var slider = yoob.makeSlider(container, 0, 100, 5);
                 var t = new Chzrxl();
                 t.init({
                     'canvas': canvas,
-                    'button': button
+                    'restartButton': button,
+                    'pctFixedSlider': slider
                 });
             }
         };
@@ -97,17 +85,19 @@ Chzrxl = function() {
     this.init = function(opts) {
         options = opts || {};
 
-        canvas = opts.canvas;
+        canvas = options.canvas;
         ctx = canvas.getContext("2d");
 
-        button = opts.button;
+        button = options.restartButton;
         var $this = this;
         button.onclick = function() {
             $this.restart();
         };
 
         percentToHoldFixed = options.percentToHoldFixed || 10;
-        pctToHoldFixedCtrl = document.getElementById('hold_fixed');
+        pctToHoldFixedCtrl = options.pctFixedSlider;
+        pctToHoldFixedCtrl.value = percentToHoldFixed;
+
         this.restart();
         this.animation = (new yoob.Animation()).init({
             object: this
