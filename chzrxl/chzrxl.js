@@ -1,7 +1,3 @@
-/*
-<br>% to hold fixed:
-*/
-
 function launch(container) {
     var deps = [
         "../common-yoob.js-0.6/element-factory.js",
@@ -15,7 +11,6 @@ function launch(container) {
             if (++loaded == deps.length) {
                 container = document.getElementById('container');
                 var canvas = yoob.makeCanvas(container, 500, 500);
-                canvas.style.display = "inline-block";
                 container.appendChild(document.createElement('br'));
                 var button = yoob.makeButton(container, 'Restart');
                 container.appendChild(document.createTextNode("Percent to hold fixed:"));

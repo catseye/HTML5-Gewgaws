@@ -1,3 +1,30 @@
+function launch(container) {
+    var deps = [
+        "../common-yoob.js-0.6/element-factory.js",
+        "../common-yoob.js-0.6/animation.js",
+        "../common-yoob.js-0.6/sprite-manager.js"
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                container = document.getElementById('container');
+                var canvas = yoob.makeCanvas(container, 600, 400);
+                container.appendChild(document.createElement('br'));
+                var button = yoob.makeButton(container, 'Reset');
+                var t = new ANonRandomWalk();
+                button.onclick = function() {
+                    t.reset();
+                }
+                t.init(canvas);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 var originX;
 var x;
 
@@ -28,7 +55,6 @@ Walker = function() {
         indicator.moveTo(this.getCenterX(), this.getY());
     };
 };
-Walker.prototype = new yoob.Sprite();
 
 Indicator = function() {
     this.init(0, 0, 0, 0);
@@ -47,7 +73,6 @@ Indicator = function() {
         ctx.stroke();
    };
 };
-Indicator.prototype = new yoob.Sprite();
 
 Card = function(color, faceUp) {
     this.color = color;
@@ -94,7 +119,6 @@ Card = function(color, faceUp) {
                      this.getWidth(), this.getHeight());
     };
 };
-Card.prototype = new yoob.Sprite();
 
 function shuffle(array) {
     var a = [];
@@ -104,7 +128,7 @@ function shuffle(array) {
     return a;
 }
 
-NonRandomWalk = function() {
+ANonRandomWalk = function() {
     var canvas;
     var ctx;
     var request;
@@ -176,7 +200,7 @@ NonRandomWalk = function() {
         var cardH = 80;
         for (var i = 0; i < 10; i++) {
             var card = deck[i];
-            var cardX = (i % 13) * (cardW * 1.5);
+            var cardX = (cardW * 0.25) + (i % 13) * (cardW * 1.5);
             var cardY = 230 + (Math.floor(i / 13)) * 30;
             card.init(cardX, cardY, cardW, cardH);
             manager.addSprite(card);
@@ -187,9 +211,15 @@ NonRandomWalk = function() {
     };
 
     this.init = function(c) {
+        /* This is kind of awful, but we can't have these as part of
+           the main script, because yoob/sprite-manager.js might not be
+           loaded yet. */
+        Walker.prototype = new yoob.Sprite();
+        Indicator.prototype = new yoob.Sprite();
+        Card.prototype = new yoob.Sprite();
+
         canvas = c;
         ctx = canvas.getContext('2d');
-        var self = this;
 
         manager = new yoob.SpriteManager();
         manager.init(canvas);
