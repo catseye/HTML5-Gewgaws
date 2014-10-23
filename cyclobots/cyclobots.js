@@ -1,3 +1,36 @@
+function launch(container) {
+    var deps = [
+        "../common-yoob.js-0.6/element-factory.js",
+        "../common-yoob.js-0.6/animation.js",
+        "../common-yoob.js-0.6/full-screen-detector.js"
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                container = document.getElementById('container');
+                var canvas = yoob.makeCanvas(container, 640, 480);
+                container.appendChild(document.createElement('br'));
+                var button = yoob.makeButton(container, 'Revolution!');
+                var showAngles = yoob.makeCheckbox(
+                    container, 'show_angles', "show angles"
+                );
+                showAngles.onchange = function() {
+                    t.setDrawAngles(showAngles.checked);
+                };
+                var t = new Cyclobots();
+                button.onclick = function() {
+                    t.shuffle();
+                };
+                t.init(canvas);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 var twopi = Math.PI * 2;
 var degrees = twopi / 360;
 
@@ -73,7 +106,7 @@ Cyclobots = function() {
 
     var bots = [];
     var numbots = 50;
-    var show_angles;
+    var drawAngles = false;
     var dragging;
     var lastX = undefined;
     var lastY = undefined;
@@ -81,8 +114,6 @@ Cyclobots = function() {
     this.init = function(c) {
         canvas = c;
         ctx = canvas.getContext("2d");
-
-        show_angles = document.getElementById('show_angles');
 
         for (var i = 0; i < numbots; i++) {
             bots[i] = new Cyclobot();
@@ -158,6 +189,10 @@ Cyclobots = function() {
         this.animation.start();
     };
 
+    this.setDrawAngles = function(b) {
+        drawAngles = b;
+    };
+
     this.selectABot = function(canvasX, canvasY) {
         var selected = undefined;
         for (var i = 0; i < numbots; i++) {
@@ -181,7 +216,7 @@ Cyclobots = function() {
         for (var i = 0; i < bots.length; i++) {
             var bot = bots[i];
             bot.draw(ctx);
-            if (show_angles && show_angles.checked) {
+            if (drawAngles) {
                 bot.drawAngles(ctx);
             }
         }
