@@ -1,4 +1,4 @@
-function launch(container) {
+function launch(containerId) {
     var deps = [
         "../common-yoob.js-0.6/element-factory.js",
         "../common-yoob.js-0.6/animation.js"
@@ -9,7 +9,7 @@ function launch(container) {
         elem.src = deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
-                container = document.getElementById('container');
+                container = document.getElementById(containerId);
                 var canvas = yoob.makeCanvas(container, 500, 500);
                 container.appendChild(document.createElement('br'));
                 var button = yoob.makeButton(container, 'Restart');
