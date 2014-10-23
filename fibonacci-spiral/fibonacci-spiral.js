@@ -1,3 +1,24 @@
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js"
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                container = document.getElementById(containerId);
+                var canvas = yoob.makeCanvas(container, 1000, 500);
+                var t = new FibonacciSpiral();
+                t.init(canvas);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 var twopi = Math.PI * 2;
 var degrees = twopi / 360;
 var fib = [1,1,2,3,5,8,13,21,34,55,89,144,233,377,610,987,1597,2584,4181,6765,10946];
@@ -14,7 +35,7 @@ var triangle = function(low, high, span, v) {
 };
 
 FibonacciSpiral = function() {
-    var info = undefined;
+    var info = undefined; // TODO: some better way to inject this, maybe
     var ctx = undefined;
     var canvas = undefined;
     var factor = 10; // 0;
@@ -24,7 +45,6 @@ FibonacciSpiral = function() {
     this.init = function(c) {
         canvas = c;
         ctx = canvas.getContext("2d");
-        info = document.getElementById('info');
         this.animation = (new yoob.Animation()).init({
             object: this
         });

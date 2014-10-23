@@ -3,23 +3,21 @@
   <meta charset="utf-8">
   <title>Fibonacci Spiral</title>
   <style>
-#canvas { border: 1px solid blue; }
+canvas { border: 1px solid blue; }
+#container {
+    width: 100%;
+    text-align: center;
+}
   </style>
 </head>
 <body>
 
 <h1>Fibonacci Spiral</h1>
 
-<canvas id="canvas" width="1000" height="500">
-Your browser doesn't support displaying an HTML5 canvas.
-</canvas>
-
-<div id="info"></div>
+<div id="container"></div>
 
 </body>
-<script src="../common-yoob.js-0.6/animation.js"></script>
 <script src="fibonacci-spiral.js"></script>
 <script>
-  var t = new FibonacciSpiral();
-  t.init(document.getElementById('canvas'));
+  launch('../common-yoob.js-0.6/', 'container');
 </script>

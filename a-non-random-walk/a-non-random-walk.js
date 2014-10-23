@@ -1,13 +1,13 @@
-function launch(containerId) {
+function launch(prefix, containerId) {
     var deps = [
-        "../common-yoob.js-0.6/element-factory.js",
-        "../common-yoob.js-0.6/animation.js",
-        "../common-yoob.js-0.6/sprite-manager.js"
+        "element-factory.js",
+        "animation.js",
+        "sprite-manager.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
         var elem = document.createElement('script');
-        elem.src = deps[i];
+        elem.src = prefix + deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
                 container = document.getElementById(containerId);
