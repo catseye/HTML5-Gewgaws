@@ -16,10 +16,10 @@ function launch(prefix, containerId) {
 
                 var overlayCanvas = yoob.makeCanvas(container, 600, 400);
                 overlayCanvas.style.position = 'absolute';
-                overlayCanvas.style.zIndex = 100;
+                overlayCanvas.style.zIndex = "100";
 
                 var canvas = yoob.makeCanvas(container, 600, 400);
-                canvas.style.zIndex = 0;
+                canvas.style.zIndex = "0";
 
                 container.appendChild(document.createElement('br'));
                 var show_blue = yoob.makeCheckbox(

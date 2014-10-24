@@ -3,37 +3,23 @@
   <meta charset="utf-8">
   <title>Multicolouralism</title>
   <style>
-#canvas { border: 1px solid blue; }
+canvas {
+  border: 1px solid blue;
+}
+#container {
+    width: 100%;
+    text-align: center;
+}
   </style>
 </head>
 <body>
 
 <h1>Multicolouralism</h1>
 
-<canvas id="canvas" width="400" height="400">
-Your browser doesn't support displaying an HTML5 canvas.
-</canvas>
-
-<br>Field strength:
-<input id="strength" type="range" min="0" max="50" value="5"/><br/>
-<label for="as_circles">
-  <input type="checkbox" name="as_circles" id="as_circles">circles</label>
+<div id="container"></div>
 
 </body>
-<script src="../common-yoob.js-0.6/animation.js"></script>
-<script src="../common-yoob.js-0.6/splash-screen.js"></script>
 <script src="multicolouralism.js"></script>
 <script>
-  yoob.showSplashScreen({
-      elementId: 'canvas',
-      innerHTML: "<p>Warning: this application displays rapidly changing colours " +
-        "and/or shapes and may be unsuitable for those sensitive to light or " +
-        "prone to epileptic seizures.</p>",
-      buttonText: "I understand -- Proceed",
-      onproceed: function() {
-          var t = new Multicolouralism();
-          t.init(document.getElementById('canvas'), 25, 25);
-      },
-      background: '#a0a0d0'
-  });
+  launch('../common-yoob.js-0.6/', 'container');
 </script>
