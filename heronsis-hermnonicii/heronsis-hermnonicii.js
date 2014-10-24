@@ -1,3 +1,30 @@
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js",
+        "sprite-manager.js"
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                container = document.getElementById(containerId);
+                var canvas = yoob.makeCanvas(container, 1200, 400);
+                yoob.makeParagraph(container,
+                  "PLATE I. THE ORGANIZATION OF COLLAPSED CLARKSON'S " +
+                  "ENTITIES (<i>Heronsis hermnonicii</i>) INTO " +
+                  "PROTO-COHORTS AS A RUDIMENTARY METHOD OF PHYSIOGNOMETRIC " +
+                  "DEFENCE");
+                var t = new HeronsisHermnonicii();
+                t.init(canvas);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 var canvas;
 
 Floater = function() {
@@ -81,7 +108,6 @@ Floater = function() {
       return dist < r * r;
     };
 };
-Floater.prototype = new yoob.Sprite();
 
 HeronsisHermnonicii = function() {
     var ctx;
@@ -128,6 +154,8 @@ HeronsisHermnonicii = function() {
     };
 
     this.init = function(c) {
+        Floater.prototype = new yoob.Sprite();
+
         canvas = c;
         ctx = canvas.getContext('2d');
 

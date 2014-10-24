@@ -50,3 +50,10 @@ yoob.makeSlider = function(container, min, max, value) {
     container.appendChild(slider);
     return slider;
 };
+
+yoob.makeParagraph = function(container, innerHTML) {
+    var p = document.createElement('p');
+    p.innerHTML = innerHTML;
+    container.appendChild(p);
+    return p;
+};

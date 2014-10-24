@@ -3,27 +3,21 @@
   <meta charset="utf-8">
   <title>Heronsis Hermnonicii</title>
   <style>
-#canvas { border: 1px solid blue; }
+canvas { border: 1px solid blue; }
+#container {
+    width: 100%;
+    text-align: center;
+}
   </style>
 </head>
 <body>
 
 <h1>Heronsis Hermnonicii</h1>
 
-<div style="text-align:center">
-  <canvas id="canvas" width="1200" height="400">
-  Your browser doesn't support displaying an HTML5 canvas.
-  </canvas>
-  <p>PLATE I. THE ORGANIZATION OF COLLAPSED CLARKSON'S
-  ENTITIES (<i>Heronsis hermnonicii</i>) INTO PROTO-COHORTS AS A
-  RUDIMENTARY METHOD OF PHYSIOGNOMETRIC DEFENCE</p>
-</div>
+<div id="container"></div>
 
 </body>
-<script src="../common-yoob.js-0.6/animation.js"></script>
-<script src="../common-yoob.js-0.6/sprite-manager.js"></script>
 <script src="heronsis-hermnonicii.js"></script>
 <script>
-  var t = new HeronsisHermnonicii();
-  t.init(document.getElementById('canvas'));
+  launch('../common-yoob.js-0.6/', 'container');
 </script>

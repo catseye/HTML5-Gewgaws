@@ -98,7 +98,7 @@ Cyclobot = function() {
         ctx.stroke();
     };
 };
-  
+
 Cyclobots = function() {
     var ctx = undefined;
     var canvas = undefined;

@@ -1,3 +1,37 @@
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js",
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                container = document.getElementById(containerId);
+                var canvas = yoob.makeCanvas(container, 400, 400);
+                container.appendChild(document.createElement('br'));
+                var choleric = yoob.makeCheckbox(
+                    container, 'cycle', "choleric"
+                );
+                var terminal = yoob.makeCheckbox(
+                    container, 'terminal', "terminal"
+                );
+                var t = new HirsuteMiasma();
+                choleric.onchange = function() {
+                    t.setCholeric(choleric.checked);
+                };
+                terminal.onchange = function() {
+                    t.setTerminal(terminal.checked);
+                };
+                t.init(canvas);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 HirsuteMiasma = function() {
     var canvas;
     var ctx;
@@ -11,10 +45,15 @@ HirsuteMiasma = function() {
     var tick = 0;
     var grab = 0;
     var flickMode = 0;
+    var terminal = false;
 
-    var status = document.getElementById('status');
-    var cycle = document.getElementById('cycle');
-    var terminal = document.getElementById('terminal');
+    this.setCholeric = function(b) {
+        flickMode = b;
+    };
+
+    this.setTerminal = function(b) {
+        terminal = b;
+    };
 
     this.draw = function() {
         x = canvas.width / 2;
@@ -50,7 +89,6 @@ HirsuteMiasma = function() {
     this.update = function() {
         var prevV = v;
         v = Math.floor((Math.cos(tick / 250) + 1) * 128);
-        if (status) status.innerHTML = v;
       
         if ((prevV === 1 && v === 0) || (prevV === 254 && v === 255)) {
             grab = 350;
@@ -60,12 +98,12 @@ HirsuteMiasma = function() {
             if (prevV === 255) v = 0; else v = 255;
         }
 
-        if (cycle) flickMode = cycle.checked;
         if (!flickMode) {
             if (!grab) {
               tick++;
             } else {
-              if (terminal.checked && v === 0) {
+              if (terminal && v === 0) {
+                // nop
               } else {
                 grab--;
               }
@@ -73,7 +111,7 @@ HirsuteMiasma = function() {
         }
     };
 
-    this.start = function(c) {
+    this.init = function(c) {
         canvas = c;
         ctx = canvas.getContext('2d');
         this.animation = (new yoob.Animation()).init({ object: this });
