@@ -28,6 +28,24 @@ function launch(prefix, containerId) {
     }
 }
 
+/*
+    new yoob.FullScreenDetector({
+        onchange: function(fullScreen) {
+            if (fullScreen) {
+                canvas.style.width = Math.floor(screen.width * 0.95) + "px";
+                canvas.style.height = Math.floor(screen.height * 0.95) + "px";
+                header.style.display = "none";
+                control_panel.style.display = "none";
+            } else {
+                canvas.style.width = "640px";
+                canvas.style.height = "400px";
+                header.style.display = "block";
+                control_panel.style.display = "block";
+            }
+        }
+    });
+*/
+
 var twopi = Math.PI * 2;
 var degrees = twopi / 360;
 
