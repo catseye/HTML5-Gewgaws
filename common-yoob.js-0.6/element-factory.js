@@ -13,8 +13,12 @@ if (window.yoob === undefined) yoob = {};
 
 yoob.makeCanvas = function(container, width, height) {
     var canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
+    if (width) {
+        canvas.width = width;
+    }
+    if (height) {
+        canvas.height = height;
+    }
     container.appendChild(canvas);
     return canvas;
 };

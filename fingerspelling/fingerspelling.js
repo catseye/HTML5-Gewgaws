@@ -1,3 +1,25 @@
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js"
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                var container = document.getElementById(containerId);
+                var t = new Fingerspelling();
+                var canvas = yoob.makeCanvas(container);
+                canvas.style.display = "block";
+                t.init(canvas);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 Thing = function() {
     this.init = function(x, y, w, h, str, intensity, r, g, b) {
         this.x = x;

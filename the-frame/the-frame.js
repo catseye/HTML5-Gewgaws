@@ -2,7 +2,7 @@ function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
         "animation.js",
-        "sprite-manager.js",
+        "sprite-manager.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
