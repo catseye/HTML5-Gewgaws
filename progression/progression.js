@@ -1,4 +1,26 @@
-function ProgressionController() {
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js",
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                var container = document.getElementById(containerId);
+                var t = new Progression();
+                var canvas = yoob.makeCanvas(container, 800, 200);
+                var counterElem = yoob.makeParagraph(container);
+                t.init(canvas, counterElem);
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
+function Progression() {
     var counter;
     var canvas;
     var ctx;
@@ -23,7 +45,7 @@ function ProgressionController() {
       counter += timeElapsed / 60.0;
     };
 
-    this.start = function(c, counter_elem) {
+    this.init = function(c, counter_elem) {
       canvas = c;
       this.counter_elem = counter_elem;
       ctx = canvas.getContext('2d');

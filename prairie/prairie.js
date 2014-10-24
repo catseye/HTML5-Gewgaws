@@ -1,4 +1,28 @@
-PrairieController = function() {
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js",
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                var container = document.getElementById(containerId);
+                var t = new Prairie();
+                var canvas = yoob.makeCanvas(container, 640, 390);
+                // PREFIXME
+                t.init(canvas,
+                  'Elevator_1_(PSF).png'
+                );
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
+Prairie = function() {
     var canvas;
     var ctx;
     var animCfg = {};
@@ -35,7 +59,7 @@ PrairieController = function() {
         }
     };
 
-    this.start = function(c, imgurl) {
+    this.init = function(c, imgurl) {
         canvas = c;
         ctx = canvas.getContext('2d');
         for (var i = 0; i < NUM_SHAPES; i++) {
@@ -51,9 +75,5 @@ PrairieController = function() {
             $this.animation.start();
         };
         img.src = imgurl;
-    };
-
-    this.stop = function() {
-        this.animation.stop();
     };
 }
