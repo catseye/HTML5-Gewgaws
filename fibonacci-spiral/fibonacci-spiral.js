@@ -9,7 +9,7 @@ function launch(prefix, containerId) {
         elem.src = prefix + deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
-                container = document.getElementById(containerId);
+                var container = document.getElementById(containerId);
                 var canvas = yoob.makeCanvas(container, 1000, 500);
                 var t = new FibonacciSpiral();
                 t.init(canvas);

@@ -10,7 +10,7 @@ function launch(prefix, containerId) {
         elem.src = prefix + deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
-                container = document.getElementById(containerId);
+                var container = document.getElementById(containerId);
                 var t = new Cyclobots();
                 var canvas = yoob.makeCanvas(container, 640, 480);
                 container.appendChild(document.createElement('br'));

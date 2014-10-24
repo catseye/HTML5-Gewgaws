@@ -10,7 +10,7 @@ function launch(prefix, containerId) {
         elem.src = prefix + deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
-                container = document.getElementById(containerId);
+                var container = document.getElementById(containerId);
                 var canvas = yoob.makeCanvas(container, 1200, 400);
                 yoob.makeParagraph(container,
                   "PLATE I. THE ORGANIZATION OF COLLAPSED CLARKSON'S " +

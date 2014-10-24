@@ -20,7 +20,7 @@ Multicolouralism = function() {
         var d2 = diag - dist(x, y, cols-1, 0);
         var d3 = diag - dist(x, y, cols-1, rows-1);
         var d4 = diag - dist(x, y, 0, rows-1);
-        
+
         var level = strengthCtrl.value;
         d1 = Math.pow(d1, level);
         d2 = Math.pow(d2, level);

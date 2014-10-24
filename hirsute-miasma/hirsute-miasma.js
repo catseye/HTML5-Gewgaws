@@ -9,7 +9,7 @@ function launch(prefix, containerId) {
         elem.src = prefix + deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
-                container = document.getElementById(containerId);
+                var container = document.getElementById(containerId);
                 var t = new HirsuteMiasma();
                 var canvas = yoob.makeCanvas(container, 400, 400);
                 container.appendChild(document.createElement('br'));
