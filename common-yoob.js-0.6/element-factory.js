@@ -26,18 +26,25 @@ yoob.makeButton = function(container, label) {
     return button;
 };
 
-yoob.makeCheckbox = function(container, name, labelText) {
+yoob.checkBoxNumber = 0;
+yoob.makeCheckbox = function(container, checked, labelText, fun) {
     var checkbox = document.createElement('input');
     checkbox.type = "checkbox";
-    checkbox.id = 'cb_' + name;
-    checkbox.checked = false;
+    checkbox.id = 'cfzzzb_' + yoob.checkBoxNumber;
+    checkbox.checked = checked;
     var label = document.createElement('label');
-    label.htmlFor = 'cb_' + name;
+    label.htmlFor = 'cfzzzb_' + yoob.checkBoxNumber;
+    yoob.checkBoxNumber += 1;
     label.appendChild(document.createTextNode(labelText));
     
     container.appendChild(checkbox);
     container.appendChild(label);
-    
+
+    if (fun) {
+        checkbox.onchange = function(e) {
+            fun(checkbox.checked);
+        }
+    }
     return checkbox;
 };
 

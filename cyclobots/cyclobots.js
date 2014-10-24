@@ -11,16 +11,13 @@ function launch(prefix, containerId) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 container = document.getElementById(containerId);
+                var t = new Cyclobots();
                 var canvas = yoob.makeCanvas(container, 640, 480);
                 container.appendChild(document.createElement('br'));
-                var button = yoob.makeButton(container, 'Revolution!');
                 var showAngles = yoob.makeCheckbox(
-                    container, 'show_angles', "show angles"
+                    container, false, "show angles", t.setDrawAngles
                 );
-                showAngles.onchange = function() {
-                    t.setDrawAngles(showAngles.checked);
-                };
-                var t = new Cyclobots();
+                var button = yoob.makeButton(container, 'Revolution!');
                 button.onclick = function() {
                     t.shuffle();
                 };

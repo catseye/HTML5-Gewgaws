@@ -11,6 +11,9 @@ function launch(prefix, containerId) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 container = document.getElementById(containerId);
+
+                var t = new Hypongtrochoid();
+
                 var overlayCanvas = yoob.makeCanvas(container, 600, 400);
                 overlayCanvas.style.position = 'absolute';
                 overlayCanvas.style.zIndex = 100;
@@ -20,40 +23,22 @@ function launch(prefix, containerId) {
 
                 container.appendChild(document.createElement('br'));
                 var show_blue = yoob.makeCheckbox(
-                    container, 'show_blue', "blue"
+                    container, true, "blue", t.setShowBlue
                 );
                 var show_red = yoob.makeCheckbox(
-                    container, 'show_red', "red"
+                    container, true, "red", t.setShowRed
                 );
                 var show_yellow = yoob.makeCheckbox(
-                    container, 'show_yellow', "yellow"
+                    container, true, "yellow", t.setShowYellow
                 );
                 var show_path = yoob.makeCheckbox(
-                    container, 'show_path', "path"
+                    container, true, "path", function(b) {
+                        overlayCanvas.style.display = b ? "block" : "none";
+                    }
                 );
-                show_path.onchange = function(e) {
-                    overlayCanvas.style.display =
-                      show_path.checked ? "block" : "none";
-                };
                 var turbo = yoob.makeCheckbox(
-                    container, 'turbo', "turbo"
+                    container, false, "turbo", t.setTurbo
                 );
-
-                var t = new Hypongtrochoid();
-
-                show_blue.onchange = function() {
-                    t.blueRectangle.visible = show_blue.checked;
-                };
-                show_red.onchange = function() {
-                    t.redRectangle.visible = show_red.checked;
-                };
-                show_yellow.onchange = function() {
-                    t.yellowRectangle.visible = show_yellow.checked;
-                };
-                turbo.onchange = function() {
-                    t.setTurbo(turbo.checked);
-                };
-
                 t.init(canvas, overlayCanvas);
             }
         };
@@ -140,6 +125,22 @@ Hypongtrochoid = function() {
 
     var manager = new yoob.SpriteManager();
 
+    var blueRectangle;
+    var redRectangle;
+    var yellowRectangle;
+
+    this.setShowBlue = function(b) {
+        blueRectangle.visible = b;
+    };
+
+    this.setShowRed = function(b) {
+        redRectangle.visible = b;
+    };
+
+    this.setShowYellow = function(b) {
+        yellowRectangle.visible = b;
+    };
+
     this.setTurbo = function(b) {
         turbo = b;
     };
@@ -170,24 +171,24 @@ Hypongtrochoid = function() {
             0, 0, 0, 0, canvas.width, canvas.height, '', null
         );
 
-        this.blueRectangle = new Rectangle();
-        this.blueRectangle.init(
+        blueRectangle = new Rectangle();
+        blueRectangle.init(
             50, 50, -1, 1, 200, 200, 'blue', outside
         );
-        manager.addSprite(this.blueRectangle);
+        manager.addSprite(blueRectangle);
 
-        this.redRectangle = new Rectangle();
-        this.redRectangle.init(
-            50, 50, -0.75, 0.75, 50, 50, 'red', this.blueRectangle
+        redRectangle = new Rectangle();
+        redRectangle.init(
+            50, 50, -0.75, 0.75, 50, 50, 'red', blueRectangle
         );
-        manager.addSprite(this.redRectangle);
+        manager.addSprite(redRectangle);
 
-        this.yellowRectangle = new Rectangle();
-        this.yellowRectangle.init(
-            10, 10, 0.5, -0.5, 10, 10, 'yellow', this.redRectangle
+        yellowRectangle = new Rectangle();
+        yellowRectangle.init(
+            10, 10, 0.5, -0.5, 10, 10, 'yellow', redRectangle
         );
-        this.yellowRectangle.scrawlOn = overlayCtx;
-        manager.addSprite(this.yellowRectangle);
+        yellowRectangle.scrawlOn = overlayCtx;
+        manager.addSprite(yellowRectangle);
 
         this.animation = (new yoob.Animation()).init({
             object: this

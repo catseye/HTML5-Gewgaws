@@ -10,21 +10,15 @@ function launch(prefix, containerId) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 container = document.getElementById(containerId);
+                var t = new HirsuteMiasma();
                 var canvas = yoob.makeCanvas(container, 400, 400);
                 container.appendChild(document.createElement('br'));
                 var choleric = yoob.makeCheckbox(
-                    container, 'cycle', "choleric"
+                    container, false, "choleric", t.setCholeric
                 );
                 var terminal = yoob.makeCheckbox(
-                    container, 'terminal', "terminal"
+                    container, false, "terminal", t.setTerminal
                 );
-                var t = new HirsuteMiasma();
-                choleric.onchange = function() {
-                    t.setCholeric(choleric.checked);
-                };
-                terminal.onchange = function() {
-                    t.setTerminal(terminal.checked);
-                };
                 t.init(canvas);
             }
         };
