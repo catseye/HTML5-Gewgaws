@@ -1,43 +1,26 @@
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
-  <title>The Frame (HTML5) | Cat's Eye Technologies</title>
-  <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico" />
+  <title>The Frame</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-#canvas { background: white; display: none;}
-#container { display: none; }
-body { background-image: none; }
+canvas {
+  border: 1px solid blue;
+}
+#container {
+    width: 100%;
+    text-align: center;
+}
   </style>
 </head>
 <body>
 
-<h1>The Frame (HTML5)</h1>
+<h1>The Frame</h1>
 
-<div style="width: 100%; text-align: center;" id="container">
-<small>Note 1. Green things can be dragged. Note 2. Due to technical limitations,
-things cannot be dragged off of the computer screen</small>
-</div>
-<canvas id="canvas" width="800" height="450">
-Your browser doesn't support displaying an HTML5 canvas.
-</canvas>
-<div style="width: 100%; text-align: center;" id="please_wait">
-Please wait, loading...
-</div>
+<div id="container"></div>
 
-<script src="../common-yoob.js-0.6/animation.js"></script>
-<script src="../common-yoob.js-0.6/sprite-manager.js"></script>
+</body>
 <script src="the-frame.js"></script>
 <script>
-  var canvas = document.getElementById('canvas');
-  var container = document.getElementById('container');
-  var please_wait = document.getElementById('please_wait');
-  please_wait.style.display = "none";
-  container.style.display = "block";
-  canvas.style.display = "block";
-  canvas.width = document.documentElement.clientWidth - canvas.offsetLeft * 2;
-  //canvas.height = document.documentElement.clientHeight - canvas.offsetTop - 5;
-  var f = new TheFrame();
-  f.init(canvas, 'the-frame.png', function() {});
+  launch('../common-yoob.js-0.6/', 'container');
 </script>
-</body>

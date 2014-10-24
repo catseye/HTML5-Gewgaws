@@ -1,11 +1,46 @@
+function launch(prefix, containerId) {
+    var deps = [
+        "element-factory.js",
+        "animation.js",
+        "sprite-manager.js",
+    ];
+    var loaded = 0;
+    for (var i = 0; i < deps.length; i++) {
+        var elem = document.createElement('script');
+        elem.src = prefix + deps[i];
+        elem.onload = function() {
+            if (++loaded == deps.length) {
+                var container = document.getElementById(containerId);
+                var t = new TheFrame();
+                var instructions = yoob.makeParagraph(container,
+                  "<small>Note 1. Green things can be dragged. " +
+                  "Note 2. Due to technical limitations, " +
+                  "things cannot be dragged off of the computer screen</small>"
+                );
+                var canvas = yoob.makeCanvas(container, 800, 450);
+                canvas.style.display = "block";
+                canvas.width = document.documentElement.clientWidth - canvas.offsetLeft * 2;
+                //canvas.height = document.documentElement.clientHeight - canvas.offsetTop - 5;
+                var pleaseWait = yoob.makeParagraph(container,
+                  "Please wait, loading..."
+                );
+                // PREFIXME
+                t.init(canvas, 'the-frame.png', function() {
+                    pleaseWait.style.display = "none";
+                });
+            }
+        };
+        document.body.appendChild(elem);
+    }
+}
+
 Corner = function() {
-  this.isDraggable = true;
-  this.draw = function(ctx) {
-    ctx.fillStyle = "green";
-    ctx.fillRect(this.x, this.y, this.w, this.h);
-  };
+    this.isDraggable = true;
+    this.draw = function(ctx) {
+        ctx.fillStyle = "green";
+        ctx.fillRect(this.x, this.y, this.w, this.h);
+    };
 };
-Corner.prototype = new yoob.Sprite();
 
 TheFrame = function() {
     var request;
@@ -81,29 +116,31 @@ TheFrame = function() {
     };
 
     this.init = function(c, imgUrl, callback) {
-      canvas = c;
-      ctx = canvas.getContext("2d");
-      manager.init(canvas);
-      var mkHandle = function(x, y, w, h) {
-          var d = new Corner();
-          d.init(x, y, w, h);
-          manager.addSprite(d);
-      };
-      var $this = this;
-      img.onload = function() {
-          callback();
-          // at this point, canvas.width is OK, so we can:
-          mkHandle(30, 30, 30, 30);
-          mkHandle(canvas.width - 60, 30, 30, 30);
-          mkHandle(canvas.width - 60, canvas.height - 60, 30, 30);
-          mkHandle(30, canvas.height - 60, 30, 30);
-          getFontHeight();
-          $this.draw();
-          $this.animation = (new yoob.Animation()).init({
-              object: $this
-          });
-          $this.animation.start();
-      }
-      img.src = imgUrl;
+        Corner.prototype = new yoob.Sprite();
+
+        canvas = c;
+        ctx = canvas.getContext("2d");
+        manager.init(canvas);
+        var mkHandle = function(x, y, w, h) {
+            var d = new Corner();
+            d.init(x, y, w, h);
+            manager.addSprite(d);
+        };
+        var $this = this;
+        img.onload = function() {
+            callback();
+            // at this point, canvas.width is OK, so we can:
+            mkHandle(30, 30, 30, 30);
+            mkHandle(canvas.width - 60, 30, 30, 30);
+            mkHandle(canvas.width - 60, canvas.height - 60, 30, 30);
+            mkHandle(30, canvas.height - 60, 30, 30);
+            getFontHeight();
+            $this.draw();
+            $this.animation = (new yoob.Animation()).init({
+                object: $this
+            });
+            $this.animation.start();
+        }
+        img.src = imgUrl;
     };
 };
