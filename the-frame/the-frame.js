@@ -1,4 +1,5 @@
-function launch(prefix, containerId) {
+function launch(prefix, containerId, config) {
+    var config = config || {};
     var deps = [
         "element-factory.js",
         "animation.js",
@@ -12,22 +13,23 @@ function launch(prefix, containerId) {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
                 var t = new TheFrame();
-                var instructions = yoob.makeParagraph(container,
-                  "<small>Note 1. Green things can be dragged. " +
-                  "Note 2. Due to technical limitations, " +
-                  "things cannot be dragged off of the computer screen</small>"
+                yoob.makeParagraph(container,
+                    "<small>Note 1. Green things can be dragged. " +
+                    "Note 2. Due to technical limitations, " +
+                    "things cannot be dragged off of the computer screen</small>"
                 );
-                var canvas = yoob.makeCanvas(container, 800, 450);
-                canvas.style.display = "block";
-                canvas.width = document.documentElement.clientWidth - canvas.offsetLeft * 2;
-                //canvas.height = document.documentElement.clientHeight - canvas.offsetTop - 5;
-                var pleaseWait = yoob.makeParagraph(container,
-                  "Please wait, loading..."
-                );
-                // PREFIXME
-                t.init(canvas, 'the-frame.png', function() {
-                    pleaseWait.style.display = "none";
-                });
+                if (!config.canvas) {
+                    var c = yoob.makeCanvas(container, 800, 450);
+                    c.style.display = "block";
+                    c.width = document.documentElement.clientWidth - c.offsetLeft * 2
+                    //c.height = document.documentElement.clientHeight - c.offsetTop - 5;
+                    config.canvas = c;
+                }
+                yoob.makeParagraph(container, "Please wait, loading...");
+                config.callback = function() {
+                    config.pleaseWait.style.display = "none";
+                }
+                t.init(config);
             }
         };
         document.body.appendChild(elem);
@@ -115,10 +117,10 @@ TheFrame = function() {
     this.update = function() {
     };
 
-    this.init = function(c, imgUrl, callback) {
+    this.init = function(config) {
         Corner.prototype = new yoob.Sprite();
 
-        canvas = c;
+        canvas = config.canvas;
         ctx = canvas.getContext("2d");
         manager.init(canvas);
         var mkHandle = function(x, y, w, h) {
@@ -128,7 +130,7 @@ TheFrame = function() {
         };
         var $this = this;
         img.onload = function() {
-            callback();
+            config.callback();
             // at this point, canvas.width is OK, so we can:
             mkHandle(30, 30, 30, 30);
             mkHandle(canvas.width - 60, 30, 30, 30);
@@ -141,6 +143,6 @@ TheFrame = function() {
             });
             $this.animation.start();
         }
-        img.src = imgUrl;
+        img.src = config.imgURL;
     };
 };
