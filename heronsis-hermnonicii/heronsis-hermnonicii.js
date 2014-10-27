@@ -12,6 +12,7 @@ function launch(prefix, containerId) {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
                 var canvas = yoob.makeCanvas(container, 1200, 400);
+                canvas.style.border = "2px solid black";
                 yoob.makeParagraph(container,
                   "PLATE I. THE ORGANIZATION OF COLLAPSED CLARKSON'S " +
                   "ENTITIES (<i>Heronsis hermnonicii</i>) INTO " +

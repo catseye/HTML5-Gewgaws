@@ -1,4 +1,5 @@
-function launch(prefix, containerId) {
+function launch(prefix, containerId, config) {
+    var config = config || {};
     var deps = [
         "element-factory.js",
         "animation.js",
@@ -11,11 +12,10 @@ function launch(prefix, containerId) {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
                 var t = new Prairie();
-                var canvas = yoob.makeCanvas(container, 640, 390);
-                // PREFIXME
-                t.init(canvas,
-                  'Elevator_1_(PSF).png'
+                config.canvas = (
+                    config.canvas || yoob.makeCanvas(container, 640, 390)
                 );
+                t.init(config);
             }
         };
         document.body.appendChild(elem);
@@ -59,8 +59,8 @@ Prairie = function() {
         }
     };
 
-    this.init = function(c, imgurl) {
-        canvas = c;
+    this.init = function(config) {
+        canvas = config.canvas;
         ctx = canvas.getContext('2d');
         for (var i = 0; i < NUM_SHAPES; i++) {
             shapes[i] = {};
@@ -74,6 +74,6 @@ Prairie = function() {
         img.onload = function() {
             $this.animation.start();
         };
-        img.src = imgurl;
+        img.src = config.imgURL;
     };
 }

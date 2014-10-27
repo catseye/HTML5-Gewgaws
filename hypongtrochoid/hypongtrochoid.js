@@ -1,3 +1,11 @@
+/*
+  extra-style: |
+    #overlay {
+      border: 1px solid red;
+      position: absolute;
+      z-index: 100;
+    }
+*/
 function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",

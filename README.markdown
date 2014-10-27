@@ -28,27 +28,27 @@ itself in the public domain.
 
 ### Consistent Gewgaw Interface ###
 
-This is really just a set of notes for establishing a consistent interface
-for starting these gewgaws.
+We're still working this out, but the idea is that these gewgaws present a
+simple, consistent interface for injecting themselves into an HTML5 page
+(giving themselves their own "standard UI"; but this is of course optional,
+and they can be manually instantiated too.)
 
-You can't currently, but you ought to be able to say something like this to
-start any of these gewgaws:
+You ought to be able to say something like this to start any of these gewgaws:
 
-    <script src="yoob/whatevs.js"></script>
-    <script src="any-gewgaw.js"></script>
+    <script src="some-gewgaw.js"></script>
     <script>
-      yoob.gewgaws["any-gewgaw.js"].launch({container: 'foo'});
+      launch('../path/to/scripts', 'element_id', config);
     </script>
 
-...where `foo` is the id of a `div` (probably) element somewhere in the
-page.  The `launch` method should create the elements needed for the
-gewgaw (often a canvas and a control panel div) inside the container.
+...where `element_id` is the id of a container `div` (probably) somewhere
+in the page.  The `launch` function will create the UI elements needed for
+the gewgaw (often a canvas and a control panel div) inside this container.
+
+Calling `launch()` will load any Javascript resources required by the
+gewgaw.  `config` is an optional object which will be passed to the gewgaw's
+`init()` method, and may specify locations of other resources such as images.
 
 There should maybe be some kind of "full window"/"fullscreen" flags in
 there too — "full window" would expand the container to fill the
 browser window, and "full screen" would probably add a full-screen-ifying
 button.
-
-And yoob.js requirements...?  Oh gosh, there are fancy Javascript ways for
-specifying those sort of things nowadays, aren't there.  Oh, but they're all
-so heavyweight.  Bah.

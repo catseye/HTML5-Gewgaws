@@ -13,6 +13,13 @@ function launch(prefix, containerId) {
                 var t = new Fingerspelling();
                 var canvas = yoob.makeCanvas(container);
                 canvas.style.display = "block";
+                canvas.style.background = "#ccaacc";
+                canvas.style.border = "none";
+                /*
+                body { margin: 0; }
+                article { margin: 0; }
+                #canvas_container { margin: 0; text-align: inherit; }
+                */
                 t.init(canvas);
             }
         };
