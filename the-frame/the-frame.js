@@ -25,9 +25,11 @@ function launch(prefix, containerId, config) {
                     //c.height = document.documentElement.clientHeight - c.offsetTop - 5;
                     config.canvas = c;
                 }
-                yoob.makeParagraph(container, "Please wait, loading...");
+                var pleaseWait = yoob.makeParagraph(container,
+                    "Please wait, loading..."
+                );
                 config.callback = function() {
-                    config.pleaseWait.style.display = "none";
+                    pleaseWait.style.display = "none";
                 }
                 t.init(config);
             }
