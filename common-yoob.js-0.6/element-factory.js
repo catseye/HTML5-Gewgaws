@@ -79,6 +79,13 @@ yoob.makeSpan = function(container, innerHTML) {
     return span;
 };
 
+yoob.makeDiv = function(container, innerHTML) {
+    var div = document.createElement('div');
+    div.innerHTML = innerHTML || '';
+    container.appendChild(div);
+    return div;
+};
+
 yoob.makeTextArea = function(container, cols, rows, initial) {
     var textarea = document.createElement('textarea');
     textarea.rows = "" + rows;
