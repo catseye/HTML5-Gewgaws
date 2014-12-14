@@ -11,7 +11,7 @@ function launch(prefix, containerId) {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
                 var canvas = yoob.makeCanvas(container, 500, 500);
-                container.appendChild(document.createElement('br'));
+                yoob.makeLineBreak(container);
                 var button = yoob.makeButton(container, 'Restart');
                 container.appendChild(document.createTextNode("Percent to hold fixed:"));
                 var slider = yoob.makeSlider(container, 0, 100, 5);
