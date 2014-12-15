@@ -55,12 +55,20 @@ yoob.makeCheckbox = function(container, checked, labelText, fun) {
     return checkbox;
 };
 
+yoob.makeTextInput = function(container, size, value) {
+    var input = document.createElement('input');
+    input.size = size || 12;
+    input.value = value || "";
+    container.appendChild(input);
+    return input;
+};
+
 yoob.makeSlider = function(container, min, max, value) {
     var slider = document.createElement('input');
     slider.type = "range";
     slider.min = min;
     slider.max = max;
-    slider.value = value;
+    slider.value = value || 0;
     container.appendChild(slider);
     return slider;
 };
