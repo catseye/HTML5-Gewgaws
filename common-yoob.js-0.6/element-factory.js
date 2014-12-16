@@ -63,12 +63,17 @@ yoob.makeTextInput = function(container, size, value) {
     return input;
 };
 
-yoob.makeSlider = function(container, min, max, value) {
+yoob.makeSlider = function(container, min, max, value, fun) {
     var slider = document.createElement('input');
     slider.type = "range";
     slider.min = min;
     slider.max = max;
     slider.value = value || 0;
+    if (fun) {
+        slider.onchange = function(e) {
+            fun(0 + slider.value);
+        }
+    }
     container.appendChild(slider);
     return slider;
 };
