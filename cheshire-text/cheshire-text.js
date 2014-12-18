@@ -51,7 +51,7 @@ function launch(prefix, containerId) {
         container.appendChild(p);
     }
 
-    var scale = 1500;
+    var scale = 1000;
     var alpha = scale;
     var intervalId = setInterval(function() {
         var col = "rgba(0,0,0," + (alpha / scale) + ")";
