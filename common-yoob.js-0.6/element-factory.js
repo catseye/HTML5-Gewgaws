@@ -57,7 +57,7 @@ yoob.makeCheckbox = function(container, checked, labelText, fun) {
 
 yoob.makeTextInput = function(container, size, value) {
     var input = document.createElement('input');
-    input.size = size || 12;
+    input.size = "" + (size || 12);
     input.value = value || "";
     container.appendChild(input);
     return input;
