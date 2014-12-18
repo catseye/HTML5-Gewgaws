@@ -50,7 +50,7 @@ yoob.makeCheckbox = function(container, checked, labelText, fun) {
     if (fun) {
         checkbox.onchange = function(e) {
             fun(checkbox.checked);
-        }
+        };
     }
     return checkbox;
 };
@@ -71,8 +71,8 @@ yoob.makeSlider = function(container, min, max, value, fun) {
     slider.value = value || 0;
     if (fun) {
         slider.onchange = function(e) {
-            fun(0 + slider.value);
-        }
+            fun(parseInt(slider.value, 10));
+        };
     }
     container.appendChild(slider);
     return slider;
@@ -137,4 +137,42 @@ yoob.makeSelect = function(container, labelText, optionsArray) {
 
     container.appendChild(select);
     return select;
+};
+
+SliderPlusTextInput = function() {
+    this.init = function(cfg) {
+        this.slider = cfg.slider;
+        this.textInput = cfg.textInput;
+        this.callback = cfg.callback;
+        return this;
+    };
+
+    this.set = function(value) {
+        this.slider.value = "" + value;
+        this.textInput.value = "" + value;
+        this.callback(value);
+    };
+};
+
+yoob.makeSliderPlusTextInput = function(container, label, min_, max_, value, callback) {
+    yoob.makeSpan(container, label);
+    var slider = yoob.makeSlider(container, min_, max_, value);
+    var s = "" + value;
+    var textInput = yoob.makeTextInput(container, s.length + 1, s);
+    slider.onchange = function(e) {
+        textInput.value = slider.value;
+        fun(parseInt(slider.value, 10));
+    };
+    textInput.onchange = function(e) {
+        var v = parseInt(textInput.value, 10);
+        if (v !== NaN) {
+            slider.value = "" + v;
+            fun(v);
+        }
+    };
+    return new SliderPlusTextInput().init({
+        'slider': slider,
+        'textInput': textInput,
+        'callback': callback
+    });
 };
