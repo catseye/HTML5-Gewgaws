@@ -154,11 +154,11 @@ SliderPlusTextInput = function() {
     };
 };
 
-yoob.makeSliderPlusTextInput = function(container, label, min_, max_, value, callback) {
+yoob.makeSliderPlusTextInput = function(container, label, min_, max_, size, value, fun) {
     yoob.makeSpan(container, label);
     var slider = yoob.makeSlider(container, min_, max_, value);
     var s = "" + value;
-    var textInput = yoob.makeTextInput(container, s.length + 1, s);
+    var textInput = yoob.makeTextInput(container, size, s);
     slider.onchange = function(e) {
         textInput.value = slider.value;
         fun(parseInt(slider.value, 10));
@@ -173,6 +173,6 @@ yoob.makeSliderPlusTextInput = function(container, label, min_, max_, value, cal
     return new SliderPlusTextInput().init({
         'slider': slider,
         'textInput': textInput,
-        'callback': callback
+        'callback': fun
     });
 };
