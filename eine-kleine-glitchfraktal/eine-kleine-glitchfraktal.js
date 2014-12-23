@@ -32,8 +32,11 @@ function launch(prefix, containerId, config) {
                 "SYNC GLITCH": function(n) {
                     t.style = 2;
                 },
-                "ASYNC GLITCH": function(n) {
+                "SUPERSYNC GLITCH": function(n) {
                     t.style = 3;
+                },
+                "ASYNC GLITCH": function(n) {
+                    t.style = 4;
                 }
             };
             for (n in presets) {
@@ -83,6 +86,8 @@ FractalRectangles = function() {
 
     this.draw = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        this.globalWidthFactor = (1.5 + Math.random());
+        this.globalHeightFactor = (1.5 + Math.random());
         this.drawRectangle(canvas.width / 2, canvas.height / 2,
                            canvas.width / 2, canvas.height / 2, 0, 0, 0, 0);
     };
@@ -108,6 +113,10 @@ FractalRectangles = function() {
             newwidth = function() { return neww; };
             newheight = function() { return newh; };
         } else if (this.style === 3) {
+            var $this = this;
+            newwidth = function() { return width / $this.globalWidthFactor - padding; };
+            newheight = function() { return height / $this.globalHeightFactor - padding; };
+        } else if (this.style === 4) {
             newwidth = function() { return width / (1.5 + Math.random()) - padding; };
             newheight = function() { return height / (1.5 + Math.random()) - padding; };
         }
