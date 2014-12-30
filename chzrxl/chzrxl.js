@@ -10,16 +10,19 @@ function launch(prefix, containerId) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
+                var t = new Chzrxl();
                 var canvas = yoob.makeCanvas(container, 500, 500);
                 yoob.makeLineBreak(container);
-                var button = yoob.makeButton(container, 'Restart');
+                var button = yoob.makeButton(container, 'Restart', function() {
+                    t.restart();
+                });
                 container.appendChild(document.createTextNode("Percent to hold fixed:"));
-                var slider = yoob.makeSlider(container, 0, 100, 5);
-                var t = new Chzrxl();
+                var slider = yoob.makeSlider(container, 0, 100, 10, function(v) {
+                    t.setPercentToHoldFixed(v);
+                });
                 t.init({
                     'canvas': canvas,
-                    'restartButton': button,
-                    'pctFixedSlider': slider
+                    'percentToHoldFixed': 10
                 });
             }
         };
@@ -83,15 +86,7 @@ Chzrxl = function() {
         canvas = options.canvas;
         ctx = canvas.getContext("2d");
 
-        button = options.restartButton;
-        var $this = this;
-        button.onclick = function() {
-            $this.restart();
-        };
-
         percentToHoldFixed = options.percentToHoldFixed || 10;
-        pctToHoldFixedCtrl = options.pctFixedSlider;
-        pctToHoldFixedCtrl.value = percentToHoldFixed;
 
         this.restart();
         this.animation = (new yoob.Animation()).init({
@@ -130,16 +125,15 @@ Chzrxl = function() {
     };
 
     this.update = function() {
-        var p = percentToHoldFixed;
-        if (pctToHoldFixedCtrl) {
-            p = pctToHoldFixedCtrl.value;
-        }
-        var numFixed = balls.length * (p / 100);
+        var numFixed = balls.length * (percentToHoldFixed / 100);
         for (var i = 0; i < balls.length; i++) {
             if (i < numFixed) continue;
             balls[i].updateXY(balls[i].getPct(t));
         }
-
         t += 1;
+    };
+
+    this.setPercentToHoldFixed = function(value) {
+        percentToHoldFixed = value;
     };
 };

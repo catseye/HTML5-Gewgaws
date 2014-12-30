@@ -1,4 +1,5 @@
-function launch(prefix, containerId) {
+function launch(prefix, containerId, config) {
+    var config = config || {};
     var deps = [
         "element-factory.js",
         "animation.js",
@@ -12,7 +13,9 @@ function launch(prefix, containerId) {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
                 var t = new Cyclobots();
-                var canvas = yoob.makeCanvas(container, 640, 480);
+                var width = config.width || 640;
+                var height = config.height || 480;
+                var canvas = yoob.makeCanvas(container, width, height);
                 container.appendChild(document.createElement('br'));
                 var showAngles = yoob.makeCheckbox(
                     container, false, "show angles", t.setDrawAngles
