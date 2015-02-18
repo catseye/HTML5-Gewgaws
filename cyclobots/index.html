@@ -3,18 +3,36 @@
   <meta charset="utf-8">
   <title>Cyclobots</title>
   <style>
-canvas { border: 1px solid blue; }
-#container {
+html, body {
     width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    line-height: 0;
     text-align: center;
+}
+header {
+    margin: 0;
+    padding: 0;
+    height: 3em;
+}
+h1 {
+    margin: 0;
+    padding: 0;
+    line-height: 1.5em;
+}
+canvas {
+    width: 80%;
+    height: 80%;
+    background: pink;
 }
   </style>
 </head>
-<body>
+<body id="container">
 
-<h1>Cyclobots</h1>
-
-<div id="container"></div>
+<header>
+  <h1>Cyclobots</h1>
+</header>
 
 </body>
 <script src="cyclobots.js"></script>

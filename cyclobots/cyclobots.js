@@ -12,42 +12,53 @@ function launch(prefix, containerId, config) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
+
                 var t = new Cyclobots();
-                var width = config.width || 640;
-                var height = config.height || 480;
-                var canvas = yoob.makeCanvas(container, width, height);
-                container.appendChild(document.createElement('br'));
+                var canvas = yoob.makeCanvas(container);
+                var controlPanel = yoob.makeDiv(container);
                 var showAngles = yoob.makeCheckbox(
-                    container, false, "show angles", t.setDrawAngles
+                    controlPanel, false, "show angles", t.setDrawAngles
                 );
-                var button = yoob.makeButton(container, 'Revolution!');
-                button.onclick = function() {
-                    t.shuffle();
+                var button = yoob.makeButton(
+                    controlPanel, 'Revolution!', t.shuffle
+                );
+
+                var resize = function() {
+                    canvas.width = canvas.clientWidth;
+                    canvas.height = canvas.clientHeight;
                 };
-                t.init(canvas);
+
+                window.onload = function() {
+                    resize();
+                    t.init(canvas);
+                };
+                window.onresize = resize;
+
+                var header = document.getElementsByTagName('header')[0];
+
+                new yoob.FullScreenDetector({
+                    onchange: function(fullScreen) {
+                        if (fullScreen) {
+                            canvas.style.width = "100%";
+                            canvas.style.height = "100%";
+                            if (header) header.style.display = "none";
+                            controlPanel.style.display = "none";
+                            resize();
+                        } else {
+                            canvas.style.width = null;
+                            canvas.style.height = null;
+                            if (header) header.style.display = "block";
+                            controlPanel.style.display = "block";
+                            resize();
+                        }
+                    }
+                });
+
             }
         };
         document.body.appendChild(elem);
     }
 }
-
-/*
-    new yoob.FullScreenDetector({
-        onchange: function(fullScreen) {
-            if (fullScreen) {
-                canvas.style.width = Math.floor(screen.width * 0.95) + "px";
-                canvas.style.height = Math.floor(screen.height * 0.95) + "px";
-                header.style.display = "none";
-                control_panel.style.display = "none";
-            } else {
-                canvas.style.width = "640px";
-                canvas.style.height = "400px";
-                header.style.display = "block";
-                control_panel.style.display = "block";
-            }
-        }
-    });
-*/
 
 var twopi = Math.PI * 2;
 var degrees = twopi / 360;
