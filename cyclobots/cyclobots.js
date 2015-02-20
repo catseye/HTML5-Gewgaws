@@ -15,6 +15,10 @@ function launch(prefix, containerId, config) {
 
                 var t = new Cyclobots();
                 var canvas = yoob.makeCanvas(container);
+
+                if (config.width) canvas.width = config.width;
+                if (config.height) canvas.height = config.height;
+
                 var controlPanel = yoob.makeDiv(container);
                 var showAngles = yoob.makeCheckbox(
                     controlPanel, false, "show angles", t.setDrawAngles
