@@ -16,7 +16,11 @@ function launch(prefix, containerId) {
                 var canvas = yoob.makeCanvas(container);
                 canvas.style.display = "block";
                 canvas.style.background = "#ccaacc";
-                canvas.style.border = "none";
+                for (var elem = canvas; elem; elem = elem.parentElement) {
+                    elem.style.border = "none";
+                    elem.style.margin = "0";
+                    elem.style.padding = "0";
+                } 
                 t.init(canvas);
             }
         };
@@ -124,78 +128,70 @@ var Fingerspelling = function() {
     };
 
     this.init = function(c, opts) {
-      canvas = c;
-      ctx = canvas.getContext("2d");
-      options = opts || {};
-      options.red = options.red || 0;
-      options.green = options.green || 0;
-      options.blue = options.blue || 0;
+        canvas = c;
+        ctx = canvas.getContext("2d");
+        options = opts || {};
+        options.red = options.red || 0;
+        options.green = options.green || 0;
+        options.blue = options.blue || 0;
+        
+        var resizeCanvas = function() {
+            var rect = canvas.getBoundingClientRect()
+            var absTop = Math.round(rect.top + window.pageYOffset);
+            var absLeft = Math.round(rect.left + window.pageXOffset);
+            canvas.width = document.documentElement.clientWidth - absLeft * 2;
+            canvas.height = document.documentElement.clientHeight - (absTop + absLeft);
+            ctx.textBaseline = "top";
+            ctx.font = "24px Serif";
+        };
+        window.addEventListener("load", resizeCanvas);
+        window.addEventListener("resize", resizeCanvas);
 
-      var resizeCanvas = function() {
-          var offsetLeft = 0;
-          var offsetTop = 0;
-          for (var elem = canvas; elem; elem = elem.parentElement) {
-              offsetLeft += elem.offsetLeft;
-              offsetTop += elem.offsetTop;
-              elem.style.margin = "0";
-              elem.style.padding = "0";
-              elem.style.lineHeight = "0";
-          }
-          canvas.width =
-              document.documentElement.clientWidth - canvas.offsetLeft * 2;
-          canvas.height =
-              document.documentElement.clientHeight - canvas.offsetTop;
-          ctx.textBaseline = "top";
-          ctx.font = "24px Serif";
-      };
-      window.addEventListener("load", resizeCanvas);
-      window.addEventListener("resize", resizeCanvas);
+        var mouseTN = 0;
+        canvas.addEventListener('mousedown', function(e) {
+            touches[mouseTN] = {};
+            touches[mouseTN].canvasX = e.pageX - canvas.offsetLeft;
+            touches[mouseTN].canvasY = e.pageY - canvas.offsetTop;
+            e.preventDefault();
+        });
+        canvas.addEventListener('mouseup', function(e) {
+            touches[mouseTN] = undefined;
+            e.preventDefault();
+        });
+        canvas.addEventListener('mousemove', function(e) {
+            if (touches[mouseTN] !== undefined) {
+                touches[mouseTN].canvasX = e.pageX - canvas.offsetLeft;
+                touches[mouseTN].canvasY = e.pageY - canvas.offsetTop;
+            }
+            e.preventDefault();
+        });
 
-      var mouseTN = 0;
-      canvas.addEventListener('mousedown', function(e) {
-          touches[mouseTN] = {};
-          touches[mouseTN].canvasX = e.pageX - canvas.offsetLeft;
-          touches[mouseTN].canvasY = e.pageY - canvas.offsetTop;
-          e.preventDefault();
-      });
-      canvas.addEventListener('mouseup', function(e) {
-          touches[mouseTN] = undefined;
-          e.preventDefault();
-      });
-      canvas.addEventListener('mousemove', function(e) {
-          if (touches[mouseTN] !== undefined) {
-              touches[mouseTN].canvasX = e.pageX - canvas.offsetLeft;
-              touches[mouseTN].canvasY = e.pageY - canvas.offsetTop;
-          }
-          e.preventDefault();
-      });
+        canvas.addEventListener('touchstart', function(e) {
+            for (var touchNum = 0; touchNum <= 1; touchNum++) {
+                var touch = e.touches[touchNum];
+                if (touch === undefined) continue;
+                touches[touchNum] = {};
+                touches[touchNum].canvasX = touch.pageX - canvas.offsetLeft;
+                touches[touchNum].canvasY = touch.pageY - canvas.offsetTop;
+            }
+            e.preventDefault();
+        });
+        canvas.addEventListener('touchend', function(e) {
+            // not great, but ehh.
+            touches = [undefined, undefined];
+            e.preventDefault();
+        });
+        canvas.addEventListener('touchmove', function(e) {
+            for (var touchNum = 0; touchNum <= 1; touchNum++) {
+                var touch = e.touches[touchNum];
+                if (touch === undefined) continue;
+                touches[touchNum].canvasX = touch.pageX - canvas.offsetLeft;
+                touches[touchNum].canvasY = touch.pageY - canvas.offsetTop;
+            }
+            e.preventDefault();
+        });
 
-      canvas.addEventListener('touchstart', function(e) {
-          for (var touchNum = 0; touchNum <= 1; touchNum++) {
-              var touch = e.touches[touchNum];
-              if (touch === undefined) continue;
-              touches[touchNum] = {};
-              touches[touchNum].canvasX = touch.pageX - canvas.offsetLeft;
-              touches[touchNum].canvasY = touch.pageY - canvas.offsetTop;
-          }
-          e.preventDefault();
-      });
-      canvas.addEventListener('touchend', function(e) {
-          // not great, but ehh.
-          touches = [undefined, undefined];
-          e.preventDefault();
-      });
-      canvas.addEventListener('touchmove', function(e) {
-          for (var touchNum = 0; touchNum <= 1; touchNum++) {
-              var touch = e.touches[touchNum];
-              if (touch === undefined) continue;
-              touches[touchNum].canvasX = touch.pageX - canvas.offsetLeft;
-              touches[touchNum].canvasY = touch.pageY - canvas.offsetTop;
-          }
-          e.preventDefault();
-      });
-
-      this.animation = (new yoob.Animation()).init({ object: this });
-      this.animation.start();
+        this.animation = (new yoob.Animation()).init({ object: this });
+        this.animation.start();
     };
 };
