@@ -1,3 +1,5 @@
+"use strict";
+
 function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
@@ -15,11 +17,6 @@ function launch(prefix, containerId) {
                 canvas.style.display = "block";
                 canvas.style.background = "#ccaacc";
                 canvas.style.border = "none";
-                /*
-                body { margin: 0; }
-                article { margin: 0; }
-                #canvas_container { margin: 0; text-align: inherit; }
-                */
                 t.init(canvas);
             }
         };
@@ -27,7 +24,7 @@ function launch(prefix, containerId) {
     }
 }
 
-Thing = function() {
+var Thing = function() {
     this.init = function(x, y, w, h, str, intensity, r, g, b) {
         this.x = x;
         this.y = y;
@@ -42,28 +39,31 @@ Thing = function() {
     };
 
     this.draw = function(ctx) {
-      ctx.fillStyle = "rgba(" + this.r + ", " + this.g + "," + this. b + "," + 1.0 * this.intensity + ")";
-      ctx.fillText(this.str, this.x, this.y);
+        ctx.fillStyle = "rgba(" + this.r + ", " + this.g + "," + this. b + "," + 1.0 * this.intensity + ")";
+        ctx.fillText(this.str, this.x, this.y);
     };
 };
 
-Queue = function() {
+var Queue = function() {
     this.init = function() {
         this.queue = [];
         return this;
     };
+
     this.enqueue = function(obj) {
         this.queue.push(obj);
     };
+
     this.dequeue = function() {
         return this.queue.shift();
     };
+
     this.draw = function(ctx) {
-        var style;
         for (var i = 0; i < this.queue.length; i++) {
             this.queue[i].draw(ctx);
         }
     };
+
     this.fade = function(amount) {
         for (var i = 0; i < this.queue.length; i++) {
             this.queue[i].intensity -= amount;
@@ -75,7 +75,7 @@ Queue = function() {
     };
 };
 
-Fingerspelling = function() {
+var Fingerspelling = function() {
     var request;
     var options;
 
@@ -125,23 +125,31 @@ Fingerspelling = function() {
 
     this.init = function(c, opts) {
       canvas = c;
-      c.left = 0;
+      ctx = canvas.getContext("2d");
       options = opts || {};
       options.red = options.red || 0;
       options.green = options.green || 0;
       options.blue = options.blue || 0;
 
-      var resizeCanvas = function(e) {
+      var resizeCanvas = function() {
+          var offsetLeft = 0;
+          var offsetTop = 0;
+          for (var elem = canvas; elem; elem = elem.parentElement) {
+              offsetLeft += elem.offsetLeft;
+              offsetTop += elem.offsetTop;
+              elem.style.margin = "0";
+              elem.style.padding = "0";
+              elem.style.lineHeight = "0";
+          }
           canvas.width =
               document.documentElement.clientWidth - canvas.offsetLeft * 2;
           canvas.height =
-              document.documentElement.clientHeight - canvas.offsetTop - 5;
-          ctx = canvas.getContext("2d");
+              document.documentElement.clientHeight - canvas.offsetTop;
           ctx.textBaseline = "top";
           ctx.font = "24px Serif";
       };
+      window.addEventListener("load", resizeCanvas);
       window.addEventListener("resize", resizeCanvas);
-      resizeCanvas();
 
       var mouseTN = 0;
       canvas.addEventListener('mousedown', function(e) {
