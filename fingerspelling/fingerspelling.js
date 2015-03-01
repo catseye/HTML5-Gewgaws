@@ -14,12 +14,13 @@ function launch(prefix, containerId) {
                 var container = document.getElementById(containerId);
                 var t = new Fingerspelling();
                 var canvas = yoob.makeCanvas(container);
-                canvas.style.display = "block";
+                canvas.style.display = "none";
                 canvas.style.background = "#ccaacc";
                 for (var elem = canvas; elem; elem = elem.parentElement) {
                     elem.style.border = "none";
                     elem.style.margin = "0";
                     elem.style.padding = "0";
+                    elem.style.lineHeight = "0";
                 } 
                 t.init(canvas);
             }
@@ -136,6 +137,9 @@ var Fingerspelling = function() {
         options.blue = options.blue || 0;
         
         var resizeCanvas = function() {
+            if (canvas.style.display === 'none') {
+                canvas.style.display = "block";
+            }
             var rect = canvas.getBoundingClientRect()
             var absTop = Math.round(rect.top + window.pageYOffset);
             var absLeft = Math.round(rect.left + window.pageXOffset);
