@@ -2,7 +2,8 @@ function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
         "animation.js",
-        "sprite-manager.js"
+        "sprite-manager.js",
+        "canvas-resizer.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
@@ -10,15 +11,22 @@ function launch(prefix, containerId) {
         elem.src = prefix + deps[i];
         elem.onload = function() {
             if (++loaded == deps.length) {
+                var gewgaw = new ANonRandomWalk();
                 var container = document.getElementById(containerId);
+                var button = yoob.makeButton(container, 'Reset', gewgaw.reset);
                 var canvas = yoob.makeCanvas(container, 600, 400);
-                container.appendChild(document.createElement('br'));
-                var button = yoob.makeButton(container, 'Reset');
-                var t = new ANonRandomWalk();
-                button.onclick = function() {
-                    t.reset();
-                }
-                t.init(canvas);
+                var initialized = false;
+                var cr = (new yoob.CanvasResizer()).init({
+                    canvas: canvas,
+                    onResizeEnd: function() {
+                        if (!initialized) {
+                            gewgaw.init(canvas);
+                            initialized = true;
+                        }
+                    },
+                    desiredWidth: 600,
+                    desiredHeight: 400
+                }).register();
             }
         };
         document.body.appendChild(elem);
@@ -35,14 +43,16 @@ var cardHistory;
 var cardsRemaining;
 
 Walker = function() {
-    this.init(0, 0, 40, 40);
+    this.init({
+        x: 0, y: 0, width: 40, height: 40
+    });
     this.dist = 0;
     this.draw = function(ctx) {
         ctx.beginPath();
         ctx.strokeStyle = "black";
         ctx.lineWidth = 3;
         ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-        ctx.arc(this.getCenterX(), this.getCenterY(),
+        ctx.arc(this.getX(), this.getY(),
                 this.getWidth() / 2, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
@@ -52,12 +62,14 @@ Walker = function() {
         this.setVelocity(0, 0);
         indicator.dist = this.dist;
         if (cardsRemaining === 0) indicator.dist = 0;
-        indicator.moveTo(this.getCenterX(), this.getY());
+        indicator.setPosition(this.getX(), this.getY());
     };
 };
 
 Indicator = function() {
-    this.init(0, 0, 0, 0);
+    this.init({
+        x: 0, y: 0, width: 0, height: 0
+    });
     this.dist = 0;
     this.draw = function(ctx) {
         ctx.beginPath();
@@ -78,7 +90,7 @@ Card = function(color, faceUp) {
     this.color = color;
     this.faceUp = faceUp;
 
-    this.isClickable = true;
+    // TODO init() function here that calls superclass
 
     this.onclick = function() {
         if (this.faceUp) return;
@@ -104,9 +116,8 @@ Card = function(color, faceUp) {
     this.draw = function(ctx) {
         if (!this.faceUp) {
             var gradient = ctx.createLinearGradient(
-                this.getX(), this.getY(),
-                this.getX() + this.getWidth(),
-                this.getY() + this.getHeight()
+                this.getLeftX(), this.getTopY(),
+                this.getRightX(), this.getBottomY()
             );
             gradient.addColorStop(0.0, "red");
             gradient.addColorStop(0.5, "white");
@@ -115,7 +126,7 @@ Card = function(color, faceUp) {
         } else {
             ctx.fillStyle = this.color;
         }
-        ctx.fillRect(this.getX(), this.getY(),
+        ctx.fillRect(this.getLeftX(), this.getTopY(),
                      this.getWidth(), this.getHeight());
     };
 };
@@ -131,7 +142,6 @@ function shuffle(array) {
 ANonRandomWalk = function() {
     var canvas;
     var ctx;
-    var request;
 
     var manager;
 
@@ -200,14 +210,20 @@ ANonRandomWalk = function() {
         var cardH = 80;
         for (var i = 0; i < 10; i++) {
             var card = deck[i];
-            var cardX = (cardW * 0.25) + (i % 13) * (cardW * 1.5);
+            var cardX = (cardW * 0.75) + (i % 13) * (cardW * 1.5);
             var cardY = 230 + (Math.floor(i / 13)) * 30;
-            card.init(cardX, cardY, cardW, cardH);
+            card.init({
+                x: cardX,
+                y: cardY,
+                width: cardW,
+                height: cardH,
+                isClickable: true
+            });
             manager.addSprite(card);
         }
-        walker.moveCenterTo(originX + x, y - walker.getHeight() / 2);
+        walker.setPosition(originX + x, y - walker.getHeight() / 2);
         indicator.dist = Math.abs(x) / 2;
-        indicator.moveTo(walker.getCenterX(), walker.getY());
+        indicator.setPosition(walker.getX(), walker.getY());
     };
 
     this.init = function(c) {
@@ -221,8 +237,9 @@ ANonRandomWalk = function() {
         canvas = c;
         ctx = canvas.getContext('2d');
 
-        manager = new yoob.SpriteManager();
-        manager.init(canvas);
+        manager = (new yoob.SpriteManager()).init({
+            canvas: canvas
+        });
         walker = new Walker();
         manager.addSprite(walker);
         indicator = new Indicator();
