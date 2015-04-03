@@ -26,12 +26,14 @@ MinimalistCritique = function() {
     this.init = function(cfg) {
         this.canvas = cfg.canvas;
         this.ctx = this.canvas.getContext('2d');
+        this.manager = (new yoob.SpriteManager()).init({ canvas: this.canvas });
+        this.animation = (new yoob.Animation()).init({'object': this});
         this.reset();
         return this;
     };
 
     this.reset = function() {
-        this.manager = (new yoob.SpriteManager()).init({ canvas: this.canvas });
+        this.manager.clearSprites();
 
         this.current = null;
         this.floorLevel = this.canvas.height;
@@ -40,8 +42,6 @@ MinimalistCritique = function() {
         this.stage = 0;
 
         this.addNextBlock();
-
-        this.animation = (new yoob.Animation()).init({'object': this});
     };
 
     this.start = function() {
@@ -63,41 +63,30 @@ MinimalistCritique = function() {
 
     this.addNextBlock = function() {
         if (this.stage >= this.sizes.length) {
-            // start blinking the X
-            //alert('done');
             this.animation.stop();
-
-            this.ctx.save();
-            this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2); 
-            this.ctx.rotate(0.125 * 2 * Math.PI);
-            this.ctx.fillStyle = 'red';
-            this.ctx.fillRect(
-                this.canvas.width * -0.40,
-                this.canvas.height * -0.05,
-                this.canvas.width * 0.80,
-                this.canvas.height * 0.10
-            );
-            this.ctx.restore();
-
-            this.ctx.save();
-            this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2); 
-            this.ctx.rotate(0.375 * 2 * Math.PI);
-            this.ctx.fillStyle = 'red';
-            this.ctx.fillRect(
-                this.canvas.width * -0.40,
-                this.canvas.height * -0.05,
-                this.canvas.width * 0.80,
-                this.canvas.height * 0.10
-            );
-            this.ctx.restore();
-
             var $this = this;
             setTimeout(function() {
-                $this.reset();
-                $this.start();
-            }, 1000);
-
-            return;
+                // draw the big red X
+                var angles = [0.125, 0.375];
+                for (var i = 0; i <= 1; i++) {
+                    $this.ctx.save();
+                    $this.ctx.translate($this.canvas.width / 2, $this.canvas.height / 2); 
+                    $this.ctx.rotate(angles[i] * 2 * Math.PI);
+                    $this.ctx.fillStyle = 'red';
+                    $this.ctx.fillRect(
+                        $this.canvas.width * -0.40,
+                        $this.canvas.height * -0.05,
+                        $this.canvas.width * 0.80,
+                        $this.canvas.height * 0.10
+                    );
+                    $this.ctx.restore();
+                }
+                
+                setTimeout(function() {
+                    $this.reset();
+                    $this.start();  
+                }, 1000);
+            }, 100);
         }
 
         this.addBlock({
