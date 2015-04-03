@@ -281,6 +281,10 @@ yoob.SpriteManager = function() {
             this.sprites.splice(index, 1);
         }
     };
+
+    this.clearSprites = function() {
+        this.sprites = [];
+    };
     
     this.moveToFront = function(sprite) {
         this.removeSprite(sprite);

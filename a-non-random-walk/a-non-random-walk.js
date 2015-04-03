@@ -14,7 +14,8 @@ function launch(prefix, containerId) {
                 var gewgaw = new ANonRandomWalk();
                 var container = document.getElementById(containerId);
                 var button = yoob.makeButton(container, 'Reset', gewgaw.reset);
-                var canvas = yoob.makeCanvas(container, 600, 400);
+                var hanger = yoob.makeDiv(container);
+                var canvas = yoob.makeCanvas(hanger, 600, 400);
                 var initialized = false;
                 var cr = (new yoob.CanvasResizer()).init({
                     canvas: canvas,
@@ -108,7 +109,7 @@ Card = function(color, faceUp) {
         // new dist, will be set on indicator when walker finishes
         walker.dist = Math.abs(x) / 2;
         cardHistory.push(x);
-        walker.setDestination(originX + x - walker.getWidth() / 2, walker.getY(), 30);
+        walker.setDestination(originX + x, walker.getY(), 30);
         this.faceUp = true;
         cardsRemaining--;
     };
@@ -195,6 +196,13 @@ ANonRandomWalk = function() {
     };
 
     this.reset = function() {
+        manager.clearSprites();
+
+        walker = new Walker();
+        manager.addSprite(walker);
+        indicator = new Indicator();
+        manager.addSprite(indicator);
+
         x = 250;
         y = 100;
         targetX = 23.73046875 * (x / 100);
@@ -211,7 +219,7 @@ ANonRandomWalk = function() {
         for (var i = 0; i < 10; i++) {
             var card = deck[i];
             var cardX = (cardW * 0.75) + (i % 13) * (cardW * 1.5);
-            var cardY = 230 + (Math.floor(i / 13)) * 30;
+            var cardY = 280;
             card.init({
                 x: cardX,
                 y: cardY,
@@ -240,10 +248,6 @@ ANonRandomWalk = function() {
         manager = (new yoob.SpriteManager()).init({
             canvas: canvas
         });
-        walker = new Walker();
-        manager.addSprite(walker);
-        indicator = new Indicator();
-        manager.addSprite(indicator);
 
         this.reset();
         this.animation = (new yoob.Animation()).init({
