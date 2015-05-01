@@ -1,5 +1,5 @@
 /*
- * This file is part of yoob.js version 0.9-PRE
+ * This file is part of yoob.js version 0.9
  * Available from https://github.com/catseye/yoob.js/
  * This file is in the public domain.  See http://unlicense.org/ for details.
  */
@@ -125,6 +125,7 @@ yoob.Sprite = function() {
                 y >= this.getTopY() && y <= this.getBottomY());
     };
 
+    // NOTE: this assumes that `sprite` is larger or equal in size to `this`.
     // you may need to override this in a sophisticated way if you
     // expect it to detect sprites of different shapes intersecting
     this.intersects = function(sprite) {

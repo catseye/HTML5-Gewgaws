@@ -1,5 +1,5 @@
 /*
- * This file is part of yoob.js version 0.8
+ * This file is part of yoob.js version 0.9
  * Available from https://github.com/catseye/yoob.js/
  * This file is in the public domain.  See http://unlicense.org/ for details.
  */
@@ -129,7 +129,7 @@ yoob.makeTextArea = function(container, cols, rows, initial) {
     textarea.rows = "" + rows;
     textarea.cols = "" + cols;
     if (initial) {
-        container.value = initial;
+        textarea.value = initial;
     }
     container.appendChild(textarea);
     return textarea;
@@ -200,4 +200,22 @@ yoob.makeSliderPlusTextInput = function(container, label, min_, max_, size, valu
         'textInput': textInput,
         'callback': fun
     });
+};
+
+yoob.makeSVG = function(container) {
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    /* <svg viewBox = "0 0 200 200" version = "1.1"> */
+    container.appendChild(svg);
+    return svg;
+};
+
+yoob.makeSVGElem = function(svg, tag, cfg) {
+    var elem = document.createElementNS(svg.namespaceURI, tag);
+    for (var key in cfg) {
+        if (cfg.hasOwnProperty(key)) {
+            elem.setAttribute(key, cfg[key]);
+        }
+    }
+    svg.appendChild(elem);
+    return elem;
 };
