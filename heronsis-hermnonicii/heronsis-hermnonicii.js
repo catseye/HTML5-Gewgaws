@@ -26,21 +26,24 @@ function launch(prefix, containerId) {
     }
 }
 
-var canvas;
 
-Floater = function() {
-    this.isClickable = true;
-    this.counter = 0;
-    this.rate = 0.07;
-    this.maxRate = 2;
+Floater = function(proto) {
+    this.init = function(cfg) {
+        // call superclass'es init() method
+        proto.init.apply(this, [cfg]);
+        this.isClickable = true;
+        this.counter = 0;
+        this.rate = 0.07;
+        this.maxRate = 2;
+        return this;
+    };
 
-    this.getCenterX = function() {
-        var range = this.getWidth()
+    this.getX = function() {
+        var range = this.getWidth();
         if (this.rate > this.maxRate * 0.75) {
             range *= 2;
         }
-        return this.x + this.getWidth() / 2 +
-            Math.cos(this.counter) * range;
+        return this.x + Math.cos(this.counter) * range;
     };
 
     this.draw = function(ctx) {
@@ -49,9 +52,9 @@ Floater = function() {
 
         ctx.beginPath();
         var anchorDist = 500;
-        ctx.moveTo(this.x + this.getWidth() / 2, this.getCenterY() - anchorDist);
-        ctx.lineTo(this.getCenterX(), this.getCenterY());
-        ctx.lineTo(this.x + this.getWidth() / 2, this.getCenterY() + anchorDist);
+        ctx.moveTo(this.x, this.getY() - anchorDist);
+        ctx.lineTo(this.getX(), this.getY());
+        ctx.lineTo(this.x, this.getY() + anchorDist);
         ctx.stroke();
         
         ctx.beginPath();
@@ -75,7 +78,7 @@ Floater = function() {
         }
         s = "rgba(" + red + ", " + green + ", " + blue + ", 1.0)";
         ctx.fillStyle = s;
-        ctx.arc(this.getCenterX(), this.getCenterY(),
+        ctx.arc(this.getX(), this.getY(),
                 this.getWidth() / 2, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
@@ -83,7 +86,7 @@ Floater = function() {
 
         ctx.beginPath();
         ctx.fillStyle = "rgba(255, 255, 255, " + ((100-this.getWidth()) / 200) + ")";
-        ctx.arc(this.getCenterX(), this.getCenterY(),
+        ctx.arc(this.getX(), this.getY(),
                 this.getWidth() / 2, 0, 2 * Math.PI, false);
         ctx.closePath();
         ctx.fill();
@@ -102,11 +105,11 @@ Floater = function() {
     };
 
     this.containsPoint = function(x, y) {
-      var r = this.getWidth() / 2;
-      var dx = x - this.getCenterX();
-      var dy = y - this.getCenterY();
-      var dist = dx * dx + dy * dy;
-      return dist < r * r;
+        var r = this.getWidth() / 2;
+        var dx = x - this.getX();
+        var dy = y - this.getY();
+        var dist = dx * dx + dy * dy;
+        return dist < r * r;
     };
 };
 
@@ -155,23 +158,33 @@ HeronsisHermnonicii = function() {
     };
 
     this.init = function(c) {
-        Floater.prototype = new yoob.Sprite();
+        //Floater.prototype = new yoob.Sprite();
+        var proto = new yoob.Sprite();
+        Floater.prototype = proto;
 
         canvas = c;
         ctx = canvas.getContext('2d');
 
         manager = new yoob.SpriteManager();
-        manager.init(canvas);
+        manager.init({
+            canvas: canvas
+        });
 
         var closeness = 5;
         for (var i = 1; i < 30; i++) {
-            var f = new Floater();
+            var f = new Floater(proto);
             var w = closeness;
             var x = Math.random() * (canvas.width - w * 2);
             var y = Math.random() * (canvas.height - w * 2);
-            f.init(x, y, w, w);
+            f.init({
+                x: x,
+                y: y,
+                width: w,
+                height: w
+            });
             f.counter = Math.random() * Math.PI * 2;
             manager.addSprite(f);
+            manager.moveToBack(f);
             closeness *= 1.1;
         }
 
