@@ -43,7 +43,7 @@ function launch(prefix, containerId) {
 Floater = function(proto) {
     this.init = function(cfg) {
         // call superclass'es init() method
-        proto.init.apply(this, [cfg]);
+        Floater.prototype.init.apply(this, [cfg]);
         this.isClickable = true;
         this.counter = 0;
         this.rate = 0.07;
@@ -171,9 +171,7 @@ HeronsisHermnonicii = function() {
     };
 
     this.init = function(c) {
-        //Floater.prototype = new yoob.Sprite();
-        var proto = new yoob.Sprite();
-        Floater.prototype = proto;
+        Floater.prototype = new yoob.Sprite();
 
         canvas = c;
         ctx = canvas.getContext('2d');
@@ -185,7 +183,7 @@ HeronsisHermnonicii = function() {
 
         var closeness = 5;
         for (var i = 1; i < 30; i++) {
-            var f = new Floater(proto);
+            var f = new Floater();
             var w = closeness;
             var x = Math.random() * (canvas.width - w * 2);
             var y = Math.random() * (canvas.height - w * 2);
