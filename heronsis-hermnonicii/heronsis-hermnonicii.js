@@ -2,25 +2,38 @@ function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
         "animation.js",
-        "sprite-manager.js"
+        "sprite-manager.js",
+        "canvas-resizer.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
         var elem = document.createElement('script');
         elem.src = prefix + deps[i];
         elem.onload = function() {
-            if (++loaded == deps.length) {
-                var container = document.getElementById(containerId);
-                var canvas = yoob.makeCanvas(container, 1200, 400);
-                canvas.style.border = "2px solid black";
-                yoob.makeParagraph(container,
-                  "PLATE I. THE ORGANIZATION OF COLLAPSED CLARKSON'S " +
-                  "ENTITIES (<i>Heronsis hermnonicii</i>) INTO " +
-                  "PROTO-COHORTS AS A RUDIMENTARY METHOD OF PHYSIOGNOMETRIC " +
-                  "DEFENCE");
-                var t = new HeronsisHermnonicii();
-                t.init(canvas);
-            }
+            if (++loaded < deps.length) return;
+
+            var container = document.getElementById(containerId);
+            var canvas = yoob.makeCanvas(container, 1200, 400);
+            canvas.style.border = "2px solid black";
+            var p = yoob.makeParagraph(container,
+              "PLATE I. THE ORGANIZATION OF COLLAPSED CLARKSON'S " +
+              "ENTITIES (<i>Heronsis hermnonicii</i>) INTO " +
+              "PROTO-COHORTS AS A RUDIMENTARY METHOD OF PHYSIOGNOMETRIC " +
+              "DEFENCE");
+            var gewgaw = new HeronsisHermnonicii();
+            var initialized = false;
+            var cr = (new yoob.CanvasResizer()).init({
+                canvas: canvas,
+                onResizeEnd: function() {
+                    if (!initialized) {
+                        gewgaw.init(canvas);
+                        initialized = true;
+                    }
+                },
+                desiredWidth: 1200,
+                desiredHeight: 400,
+                centerVertically: false
+            }).register();
         };
         document.body.appendChild(elem);
     }
