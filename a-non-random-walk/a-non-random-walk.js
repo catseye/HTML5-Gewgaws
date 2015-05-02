@@ -44,10 +44,17 @@ var cardHistory;
 var cardsRemaining;
 
 Walker = function() {
-    this.init({
-        x: 0, y: 0, width: 40, height: 40
-    });
-    this.dist = 0;
+    this.init = function(cfg) {
+        cfg.x = 0;
+        cfg.y = 0;
+        cfg.width = 40;
+        cfg.height = 40;
+        // call superclass'es init() method
+        Walker.prototype.init.apply(this, [cfg]);
+        this.dist = 0;
+        return this;
+    };
+
     this.draw = function(ctx) {
         ctx.beginPath();
         ctx.strokeStyle = "black";
@@ -59,6 +66,7 @@ Walker = function() {
         ctx.fill();
         ctx.stroke();
     };
+
     this.onreachdestination = function() {
         this.setVelocity(0, 0);
         indicator.dist = this.dist;
@@ -68,10 +76,17 @@ Walker = function() {
 };
 
 Indicator = function() {
-    this.init({
-        x: 0, y: 0, width: 0, height: 0
-    });
-    this.dist = 0;
+    this.init = function(cfg) {
+        cfg.x = 0;
+        cfg.y = 0;
+        cfg.width = 0;
+        cfg.height = 0;
+        // call superclass'es init() method
+        Indicator.prototype.init.apply(this, [cfg]);
+        this.dist = 0;
+        return this;
+    };
+
     this.draw = function(ctx) {
         ctx.beginPath();
         ctx.strokeStyle = "rgba(255, 0, 0, 0.5)";
@@ -87,11 +102,14 @@ Indicator = function() {
    };
 };
 
-Card = function(color, faceUp) {
-    this.color = color;
-    this.faceUp = faceUp;
-
-    // TODO init() function here that calls superclass
+Card = function() {
+    this.init = function(cfg) {
+        this.color = cfg.color;
+        this.faceUp = cfg.faceUp;
+        // call superclass'es init() method
+        Card.prototype.init.apply(this, [cfg]);
+        return this;
+    };
 
     this.onclick = function() {
         if (this.faceUp) return;
@@ -99,7 +117,7 @@ Card = function(color, faceUp) {
         // in case walker was already moving, move indicator
         if (walker.destCounter) {
             indicator.dist = dist;
-            indicator.moveTo(originX + x, walker.getY());
+            indicator.setPosition(originX + x, walker.getY());
         }
         if (this.color === 'red') {
             x -= dist;
@@ -198,9 +216,9 @@ ANonRandomWalk = function() {
     this.reset = function() {
         manager.clearSprites();
 
-        walker = new Walker();
+        walker = (new Walker()).init({});
         manager.addSprite(walker);
-        indicator = new Indicator();
+        indicator = (new Indicator()).init({});
         manager.addSprite(indicator);
 
         x = 250;
@@ -211,21 +229,22 @@ ANonRandomWalk = function() {
         cardsRemaining = 10;
         var deck = [];
         for (var i = 0; i < 10; i++) {
-            deck.push(new Card(i % 2 === 0 ? "red" : "black", false));
+            deck.push(i % 2 === 0 ? "red" : "black");
         }
         deck = shuffle(deck);
         var cardW = 40;
         var cardH = 80;
         for (var i = 0; i < 10; i++) {
-            var card = deck[i];
             var cardX = (cardW * 0.75) + (i % 13) * (cardW * 1.5);
             var cardY = 280;
-            card.init({
+            var card = (new Card()).init({
                 x: cardX,
                 y: cardY,
                 width: cardW,
                 height: cardH,
-                isClickable: true
+                isClickable: true,
+                color: deck[i],
+                faceUp: false
             });
             manager.addSprite(card);
         }
