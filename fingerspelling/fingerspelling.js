@@ -3,27 +3,43 @@
 function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
-        "animation.js"
+        "animation.js",
+        "canvas-resizer.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
         var elem = document.createElement('script');
         elem.src = prefix + deps[i];
         elem.onload = function() {
-            if (++loaded == deps.length) {
-                var container = document.getElementById(containerId);
-                var t = new Fingerspelling();
-                var canvas = yoob.makeCanvas(container);
-                canvas.style.display = "none";
-                canvas.style.background = "#ccaacc";
-                for (var elem = canvas; elem; elem = elem.parentElement) {
-                    elem.style.border = "none";
-                    elem.style.margin = "0";
-                    elem.style.padding = "0";
-                    elem.style.lineHeight = "0";
-                } 
-                t.init(canvas);
-            }
+            if (++loaded < deps.length) return;
+                
+            var container = document.getElementById(containerId);
+            var gewgaw = new Fingerspelling();
+            var canvas = yoob.makeCanvas(container);
+
+            canvas.style.display = "none";
+            canvas.style.background = "#ccaacc";
+            for (var elem = canvas; elem; elem = elem.parentElement) {
+                elem.style.border = "none";
+                elem.style.margin = "0";
+                elem.style.padding = "0";
+                elem.style.lineHeight = "0";
+            } 
+
+            var initialized = false;
+            var cr = (new yoob.CanvasResizer()).init({
+                canvas: canvas,
+                onResizeEnd: function() {
+                    if (!initialized) {
+                        gewgaw.init(canvas);
+                        initialized = true;
+                    }
+                },
+                desiredWidth: 100,   // doesn't really matter
+                desiredHeight: 100,  // doesn't really matter
+                preserveAspectRatio: false,
+                allowExpansion: true
+            }).register();
         };
         document.body.appendChild(elem);
     }
@@ -81,7 +97,6 @@ var Queue = function() {
 };
 
 var Fingerspelling = function() {
-    var request;
     var options;
 
     var canvas;
@@ -119,6 +134,8 @@ var Fingerspelling = function() {
 
     this.draw = function() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.textBaseline = "top";
+        ctx.font = "24px Serif";
         for (var touchNum = 0; touchNum <= 1; touchNum++) {
             queues[touchNum].draw(ctx);
         }
@@ -135,21 +152,6 @@ var Fingerspelling = function() {
         options.red = options.red || 0;
         options.green = options.green || 0;
         options.blue = options.blue || 0;
-        
-        var resizeCanvas = function() {
-            if (canvas.style.display === 'none') {
-                canvas.style.display = "block";
-            }
-            var rect = canvas.getBoundingClientRect()
-            var absTop = Math.round(rect.top + window.pageYOffset);
-            var absLeft = Math.round(rect.left + window.pageXOffset);
-            canvas.width = document.documentElement.clientWidth - absLeft * 2;
-            canvas.height = document.documentElement.clientHeight - (absTop + absLeft);
-            ctx.textBaseline = "top";
-            ctx.font = "24px Serif";
-        };
-        window.addEventListener("load", resizeCanvas);
-        window.addEventListener("resize", resizeCanvas);
 
         var mouseTN = 0;
         canvas.addEventListener('mousedown', function(e) {

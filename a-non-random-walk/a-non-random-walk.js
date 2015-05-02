@@ -10,25 +10,25 @@ function launch(prefix, containerId) {
         var elem = document.createElement('script');
         elem.src = prefix + deps[i];
         elem.onload = function() {
-            if (++loaded == deps.length) {
-                var gewgaw = new ANonRandomWalk();
-                var container = document.getElementById(containerId);
-                var button = yoob.makeButton(container, 'Reset', gewgaw.reset);
-                var hanger = yoob.makeDiv(container);
-                var canvas = yoob.makeCanvas(hanger, 600, 400);
-                var initialized = false;
-                var cr = (new yoob.CanvasResizer()).init({
-                    canvas: canvas,
-                    onResizeEnd: function() {
-                        if (!initialized) {
-                            gewgaw.init(canvas);
-                            initialized = true;
-                        }
-                    },
-                    desiredWidth: 600,
-                    desiredHeight: 400
-                }).register();
-            }
+            if (++loaded < deps.length) return;
+
+            var gewgaw = new ANonRandomWalk();
+            var container = document.getElementById(containerId);
+            var button = yoob.makeButton(container, 'Reset', gewgaw.reset);
+            var hanger = yoob.makeDiv(container);
+            var canvas = yoob.makeCanvas(hanger, 600, 400);
+            var initialized = false;
+            var cr = (new yoob.CanvasResizer()).init({
+                canvas: canvas,
+                onResizeEnd: function() {
+                    if (!initialized) {
+                        gewgaw.init(canvas);
+                        initialized = true;
+                    }
+                },
+                desiredWidth: 600,
+                desiredHeight: 400
+            }).register();
         };
         document.body.appendChild(elem);
     }
