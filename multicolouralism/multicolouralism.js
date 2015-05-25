@@ -15,7 +15,6 @@ function launch(prefix, containerId) {
                 var t = new Multicolouralism();
 
                 var canvas = yoob.makeCanvas(container, 400, 400);
-                canvas.id = 'canvas'; // FIXME
 
                 container.appendChild(document.createElement('br'));
                 container.appendChild(document.createTextNode("Field strength:"));
