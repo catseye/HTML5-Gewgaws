@@ -10,7 +10,7 @@ var CELL_WIDTH = BLOCK_WIDTH * 2;
 var CELL_HEIGHT = BLOCK_HEIGHT * 2;
 
 
-var makeSelect = function(container, labelText, optionsArray, fun) {
+var makeSelect = function(container, labelText, optionsArray, fun, def) {
     var label = document.createElement('label');
     label.innerHTML = labelText;
     container.appendChild(label);
@@ -33,6 +33,20 @@ var makeSelect = function(container, labelText, optionsArray, fun) {
         select.onchange = function(e) {
             fun(optionsArray[select.selectedIndex][0]);
         };
+    }
+
+    if (def) {
+        var i = 0;
+        var opt = select.options[i];
+        while (opt) {
+            if (opt.value === def) {
+                select.selectedIndex = i;
+                if (fun) fun(def);
+                break;
+            }
+            i++;
+            opt = select.options[i];
+        }
     }
 
     container.appendChild(select);
@@ -58,13 +72,23 @@ function launch(prefix, containerId, config) {
             var container = document.getElementById(containerId);
             var g = new TwoFiftySix();
 
+            var paramList = window.location.search.substr(1).split('&');
+            var params = {};
+            for (var i = 0; i < paramList.length; i++) {
+                var pair = paramList[i].split('=');
+                params[pair[0]] = pair[1];
+            }   
+
             var canvas = yoob.makeCanvas(
                 container,
                 GRID_WIDTH * CELL_WIDTH, GRID_HEIGHT * CELL_HEIGHT
             );
             canvas.style.border = Math.round(BLOCK_WIDTH / 2) + 'px solid black';
 
-            var startDelay = 45;
+            var speedParam = params.speed || '5';
+            var speed = parseInt(speedParam, 10);
+            speed = isNaN(speed) ? 5 : speed;
+            var startDelay = 50 - speed;
 
             yoob.makeLineBreak(container);
             yoob.makeSliderPlusTextInput(
@@ -87,10 +111,13 @@ function launch(prefix, containerId, config) {
                 }
             );
 
+            var palette = params.palette || 'Tetrade';
+
             yoob.makeLineBreak(container);
             makeSelect(container, "Palette:", [
                 ['RGB', 'RGB'],
-                ['Greyscale', 'Greyscale']
+                ['Greyscale', 'Greyscale'],
+                ['Tetrade', 'Tetrade']
             ], function(value) {
                 var pals = {
                     'RGB': [
@@ -104,10 +131,16 @@ function launch(prefix, containerId, config) {
                         '#aaaaaa',
                         '#555555',
                         '#000000'
+                    ],
+                    'Tetrade': [
+                        '#E1E685',
+                        '#85E6BB',
+                        '#8A85E6',
+                        '#E685B0'
                     ]
                 };
                 g.setMasterPalette(pals[value]);
-            });
+            }, palette);
 
             g.init({
                 canvas: canvas,
@@ -134,12 +167,14 @@ var TwoFiftySix = function() {
     this.init = function(cfg) {
         this.canvas = cfg.canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.masterPalette = [
-            '#ffffff',
-            '#ff0000',
-            '#00ff00',
-            '#0000ff'
-        ];
+        if (!this.masterPalette) {
+            this.masterPalette = [
+                '#ffffff',
+                '#ff0000',
+                '#00ff00',
+                '#0000ff'
+            ];
+        }
         this.palettes = new Array(256);
         this.makePalettes();
         this.delay = cfg.delay || 0;
@@ -199,7 +234,6 @@ var TwoFiftySix = function() {
 
     this.setMasterPalette = function(pal) {
         this.masterPalette = pal;
-        this.draw();
     };
 
     this.makePalettes = function() {
