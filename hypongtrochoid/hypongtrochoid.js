@@ -58,13 +58,17 @@ function launch(prefix, containerId) {
 // this still knows maybe a little too much about the internals of yoob.Sprite
 Rectangle = function() {
     this.init = function(x, y, dx, dy, w, h, style, relativeTo) {
-        this.moveTo(x, y);
-        this.setVelocity(dx, dy);
-        this.w = w;
-        this.h = h;
-        this.style = style;
+        Rectangle.prototype.init.apply(this, [{
+            x: x,
+            y: y,
+            dx: dx,
+            dy: dy,
+            width: w,
+            height: h,
+            fillStyle: style
+        }]);
         this.relativeTo = relativeTo;
-        this.visible = true;
+        return this;
     };
 
     this.onmove = function() {
@@ -117,7 +121,7 @@ Rectangle = function() {
 
     this.draw = function(ctx) {
         if (this.visible) {
-            ctx.fillStyle = this.style;
+            ctx.fillStyle = this.fillStyle;
             ctx.fillRect(
                 this.getX(), this.getY(), this.getWidth(), this.getHeight()
             );
@@ -132,7 +136,7 @@ Hypongtrochoid = function() {
     var overlayCtx;
     var turbo = false;
 
-    var manager = new yoob.SpriteManager();
+    var manager;
 
     var blueRectangle;
     var redRectangle;
@@ -171,7 +175,9 @@ Hypongtrochoid = function() {
 
         canvas = c;
         overlayCanvas = oc;
-        manager.init(canvas);
+        manager = (new yoob.SpriteManager()).init({
+            canvas: canvas
+        });
         ctx = canvas.getContext('2d');
         overlayCtx = overlayCanvas.getContext('2d');
 
@@ -184,20 +190,21 @@ Hypongtrochoid = function() {
         blueRectangle.init(
             50, 50, -1, 1, 200, 200, 'blue', outside
         );
-        manager.addSprite(blueRectangle);
 
         redRectangle = new Rectangle();
         redRectangle.init(
             50, 50, -0.75, 0.75, 50, 50, 'red', blueRectangle
         );
-        manager.addSprite(redRectangle);
 
         yellowRectangle = new Rectangle();
         yellowRectangle.init(
             10, 10, 0.5, -0.5, 10, 10, 'yellow', redRectangle
         );
         yellowRectangle.scrawlOn = overlayCtx;
+
         manager.addSprite(yellowRectangle);
+        manager.addSprite(redRectangle);
+        manager.addSprite(blueRectangle);
 
         this.animation = (new yoob.Animation()).init({
             object: this
