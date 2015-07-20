@@ -39,10 +39,9 @@ function launch(prefix, containerId, config) {
 }
 
 Corner = function() {
-    this.isDraggable = true;
     this.draw = function(ctx) {
         ctx.fillStyle = "green";
-        ctx.fillRect(this.x, this.y, this.w, this.h);
+        ctx.fillRect(this.getLeftX(), this.getTopY(), this.getWidth(), this.getHeight());
     };
 };
 
@@ -55,7 +54,7 @@ TheFrame = function() {
     var img = new Image();
     var fontHeight;
 
-    var manager = new yoob.SpriteManager();
+    var manager;
 
     var quote = [
      "“The most important thing in art is The Frame.",
@@ -91,10 +90,8 @@ TheFrame = function() {
           ctx.strokeStyle = "black";
           ctx.lineWidth = 15;
           ctx.beginPath();
-          ctx.moveTo(prev.getX() + prev.getWidth() / 2,
-                     prev.getY() + prev.getHeight() / 2);
-          ctx.lineTo(curr.getX() + curr.getWidth() / 2,
-                     curr.getY() + curr.getHeight() / 2);
+          ctx.moveTo(prev.getX(), prev.getY());
+          ctx.lineTo(curr.getX(), curr.getY());
           ctx.closePath();
           ctx.stroke();
       }
@@ -124,20 +121,24 @@ TheFrame = function() {
 
         canvas = config.canvas;
         ctx = canvas.getContext("2d");
-        manager.init(canvas);
-        var mkHandle = function(x, y, w, h) {
-            var d = new Corner();
-            d.init(x, y, w, h);
+        manager = (new yoob.SpriteManager()).init({
+            canvas: canvas
+        });
+        var mkHandle = function(x, y) {
+            var d = (new Corner()).init({
+                x: x, y: y, width: 30, height: 30,
+                isDraggable: true
+            });
             manager.addSprite(d);
         };
         var $this = this;
         img.onload = function() {
             config.callback();
             // at this point, canvas.width is OK, so we can:
-            mkHandle(30, 30, 30, 30);
-            mkHandle(canvas.width - 60, 30, 30, 30);
-            mkHandle(canvas.width - 60, canvas.height - 60, 30, 30);
-            mkHandle(30, canvas.height - 60, 30, 30);
+            mkHandle(45, 45);
+            mkHandle(canvas.width - 45, 45);
+            mkHandle(canvas.width - 45, canvas.height - 45);
+            mkHandle(45, canvas.height - 45);
             getFontHeight();
             $this.draw();
             $this.animation = (new yoob.Animation()).init({
