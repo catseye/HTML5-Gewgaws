@@ -9,6 +9,37 @@ var BLOCK_HEIGHT = 8;
 var CELL_WIDTH = BLOCK_WIDTH * 2;
 var CELL_HEIGHT = BLOCK_HEIGHT * 2;
 
+
+var makeSelect = function(container, labelText, optionsArray, fun) {
+    var label = document.createElement('label');
+    label.innerHTML = labelText;
+    container.appendChild(label);
+
+    var select = document.createElement("select");
+
+    for (var i = 0; i < optionsArray.length; i++) {
+        var op = document.createElement("option");
+        op.value = optionsArray[i][0];
+        op.text = optionsArray[i][1];
+        if (optionsArray[i].length > 2) {
+            op.selected = optionsArray[i][2];
+        } else {
+            op.selected = false;
+        }
+        select.options.add(op);
+    }
+
+    if (fun) {
+        select.onchange = function(e) {
+            fun(optionsArray[select.selectedIndex][0]);
+        };
+    }
+
+    container.appendChild(select);
+    return select;
+};
+
+
 function launch(prefix, containerId, config) {
     var config = config || {};
     var deps = [
@@ -56,6 +87,28 @@ function launch(prefix, containerId, config) {
                 }
             );
 
+            yoob.makeLineBreak(container);
+            makeSelect(container, "Palette:", [
+                ['RGB', 'RGB'],
+                ['Greyscale', 'Greyscale']
+            ], function(value) {
+                var pals = {
+                    'RGB': [
+                        '#ffffff',
+                        '#ff0000',
+                        '#00ff00',
+                        '#0000ff'
+                    ],
+                    'Greyscale': [
+                        '#ffffff',
+                        '#aaaaaa',
+                        '#555555',
+                        '#000000'
+                    ]
+                };
+                g.setMasterPalette(pals[value]);
+            });
+
             g.init({
                 canvas: canvas,
                 delay: startDelay,
@@ -65,14 +118,6 @@ function launch(prefix, containerId, config) {
         document.body.appendChild(elem);
     }
 }
-
-
-var COLOURS = [
-    '#ffffff',
-    '#ff0000',
-    '#00ff00',
-    '#0000ff'
-];
 
 
 function shuffle(ary) {
@@ -89,6 +134,12 @@ var TwoFiftySix = function() {
     this.init = function(cfg) {
         this.canvas = cfg.canvas;
         this.ctx = this.canvas.getContext('2d');
+        this.masterPalette = [
+            '#ffffff',
+            '#ff0000',
+            '#00ff00',
+            '#0000ff'
+        ];
         this.palettes = new Array(256);
         this.makePalettes();
         this.delay = cfg.delay || 0;
@@ -146,9 +197,14 @@ var TwoFiftySix = function() {
         this.animation.start();
     };
 
+    this.setMasterPalette = function(pal) {
+        this.masterPalette = pal;
+        this.draw();
+    };
+
     this.makePalettes = function() {
         for (var i = 0; i < 256; i++) {
-            this.palettes[i] = shuffle(COLOURS);
+            this.palettes[i] = shuffle(this.masterPalette);
         }
     };
 
