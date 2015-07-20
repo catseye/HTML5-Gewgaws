@@ -79,37 +79,46 @@ function launch(prefix, containerId, config) {
                 params[pair[0]] = pair[1];
             }   
 
+            var getIntParam = function(paramName, def, minV, maxV) {
+                var value = parseInt(params[paramName] || ('' + def), 10);
+                value = isNaN(value) ? def : value;
+                value = value < minV ? minV : value;
+                value = value > maxV ? maxV : value;
+                return value;
+            };
+
             var canvas = yoob.makeCanvas(
                 container,
                 GRID_WIDTH * CELL_WIDTH, GRID_HEIGHT * CELL_HEIGHT
             );
             canvas.style.border = Math.round(BLOCK_WIDTH / 2) + 'px solid black';
 
-            var speedParam = params.speed || '5';
-            var speed = parseInt(speedParam, 10);
-            speed = isNaN(speed) ? 5 : speed;
-            var startDelay = 50 - speed;
-
+            var speed = getIntParam('speed', 5, 0, 50);
             yoob.makeLineBreak(container);
             yoob.makeSliderPlusTextInput(
-                container, "Speed:", 0, 50, 5, 50 - startDelay,  function(v) {
+                container, "Speed:", 0, 50, 5, speed,  function(v) {
                     g.setDelay(50 - v);
                 }
             );
+            g.setDelay(50 - speed);
 
+            var variety = getIntParam('variety', 1, 1, 256);
             yoob.makeLineBreak(container);
             yoob.makeSliderPlusTextInput(
-                container, "Variety:", 1, 256, 5, 1,  function(v) {
+                container, "Variety:", 1, 256, 5, variety, function(v) {
                     g.setVariety(v);
                 }
             );
+            g.setVariety(variety);
 
+            var noise = getIntParam('noise', 0, 0, 100);
             yoob.makeLineBreak(container);
             yoob.makeSliderPlusTextInput(
-                container, "Noise:", 0, 100, 5, 0,  function(v) {
+                container, "Noise:", 0, 100, 5, noise, function(v) {
                     g.setNoise(v);
                 }
             );
+            g.setNoise(noise);
 
             var palette = params.palette || 'Tetrade';
 
@@ -144,8 +153,6 @@ function launch(prefix, containerId, config) {
 
             g.init({
                 canvas: canvas,
-                delay: startDelay,
-                variety: 1
             });
         };
         document.body.appendChild(elem);
@@ -177,10 +184,10 @@ var TwoFiftySix = function() {
         }
         this.palettes = new Array(256);
         this.makePalettes();
-        this.delay = cfg.delay || 0;
+        //this.delay = cfg.delay || 0;
         this.delayCounter = 0;
-        this.noise = 0;
-        this.variety = cfg.variety || 1;
+        //this.noise = 0;
+        //this.variety = cfg.variety || 1;
 
         this.playfield = (new yoob.Playfield()); // .init();
 
