@@ -10,50 +10,6 @@ var CELL_WIDTH = BLOCK_WIDTH * 2;
 var CELL_HEIGHT = BLOCK_HEIGHT * 2;
 
 
-var makeSelect = function(container, labelText, optionsArray, fun, def) {
-    var label = document.createElement('label');
-    label.innerHTML = labelText;
-    container.appendChild(label);
-
-    var select = document.createElement("select");
-
-    for (var i = 0; i < optionsArray.length; i++) {
-        var op = document.createElement("option");
-        op.value = optionsArray[i][0];
-        op.text = optionsArray[i][1];
-        if (optionsArray[i].length > 2) {
-            op.selected = optionsArray[i][2];
-        } else {
-            op.selected = false;
-        }
-        select.options.add(op);
-    }
-
-    if (fun) {
-        select.onchange = function(e) {
-            fun(optionsArray[select.selectedIndex][0]);
-        };
-    }
-
-    if (def) {
-        var i = 0;
-        var opt = select.options[i];
-        while (opt) {
-            if (opt.value === def) {
-                select.selectedIndex = i;
-                if (fun) fun(def);
-                break;
-            }
-            i++;
-            opt = select.options[i];
-        }
-    }
-
-    container.appendChild(select);
-    return select;
-};
-
-
 function launch(prefix, containerId, config) {
     var config = config || {};
     var deps = [
@@ -123,7 +79,7 @@ function launch(prefix, containerId, config) {
             var palette = params.palette || 'Tetrade';
 
             yoob.makeLineBreak(container);
-            makeSelect(container, "Palette:", [
+            yoob.makeSelect(container, "Palette:", [
                 ['RGB', 'RGB'],
                 ['Greyscale', 'Greyscale'],
                 ['Tetrade', 'Tetrade']
@@ -189,7 +145,7 @@ var TwoFiftySix = function() {
         //this.noise = 0;
         //this.variety = cfg.variety || 1;
 
-        this.playfield = (new yoob.Playfield()); // .init();
+        this.playfield = (new yoob.Playfield()).init();
 
         for (var x = 0; x < GRID_WIDTH; x++) {
             for (var y = 0; y < GRID_HEIGHT; y++) {
@@ -197,10 +153,12 @@ var TwoFiftySix = function() {
             }
         }
 
-        this.canvasView = new yoob.PlayfieldCanvasView();
-        this.canvasView.init(this.playfield, this.canvas).setCellDimensions(
-            CELL_WIDTH, CELL_HEIGHT
-        );
+        this.canvasView = new yoob.PlayfieldCanvasView().init({
+            playfield: this.playfield,
+            canvas: this.canvas,
+            cellWidth: CELL_WIDTH,
+            cellHeight: CELL_HEIGHT
+        });
 
         var $this = this;
         this.canvasView.drawCell = function(ctx, value, playfieldX, playfieldY,
