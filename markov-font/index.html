@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Markov Font</title>
+  <style>
+body { text-align: center; }
+canvas { width: 18px; height: 18px; }
+#charset { width: 512px; height: 128px; }
+#container {
+    background: #808080;
+    padding: 10px;
+}
+
+  </style>
+</head>
+<body>
+
+<h1>Markov Font</h1>
+
+<div id="container">
+  <img id="charset" src="c64_noninverted.png">
+</div>
+
+</body>
+<script src="markov-font.js"></script>
+<script>
+  launch('../common-yoob.js-0.11/', 'container', {
+      // to not have to mess with cross-domain security whatever
+      // when running locally, download this image from here:
+      // http://static.catseye.tc/archive/kofler.dot.at/c64_images/c64_noninverted.png
+      // and place it in this directory
+      imgUrl: "c64_noninverted.png"
+  }
+);
+</script>
