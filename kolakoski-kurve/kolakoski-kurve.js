@@ -16,16 +16,29 @@ function launch(prefix, containerId) {
                 yoob.makeLineBreak(container);
                 yoob.makeSliderPlusTextInput(container, "Segment length:", 2, 25, (2), 5, function(v) {
                     gewgaw.dist = v;
+                    gewgaw.reset();
+                });
+                yoob.makeLineBreak(container);
+                yoob.makeSliderPlusTextInput(container, "Start index", 1, 10000, 5, 1, function(v) {
+                    gewgaw.startIndex = v - 1;
+                    gewgaw.reset();
+                });
+                yoob.makeLineBreak(container);
+                yoob.makeSliderPlusTextInput(container, "End index", 1, 10000, 5, 10000, function(v) {
+                    gewgaw.endIndex = v - 1;
+                    gewgaw.reset();
                 });
                 yoob.makeLineBreak(container);
                 yoob.makeCheckbox(
                     container, true, "opaque", function(bool) {
                         gewgaw.ctx.strokeStyle = bool ? "black" : "rgba(0,0,0,0.1)";
+                        gewgaw.reset();
                     }
                 );
                 yoob.makeCheckbox(
                     container, false, "xor", function(bool) {
                         gewgaw.ctx.globalCompositeOperation = bool ? "xor" : "source-over";
+                        gewgaw.reset();
                     }
                 );
                 yoob.makeLineBreak(container);
@@ -52,10 +65,7 @@ KolakoskiKurve = function() {
 
         this.startIndex = 0;
         this.endIndex = 10000;
-        this.delay = -1;
-        this.delayCounter = 0;
         this.stepSize = 10;
-        this.sequence = this.generate(this.endIndex);
         this.reset();
     };
 
@@ -69,6 +79,9 @@ KolakoskiKurve = function() {
         this.theta = 0;
 
         this.index = this.startIndex;
+
+        this.sequence = this.generate(this.endIndex);
+
         if (this.animation) this.animation.stop();
         this.animation = (new yoob.Animation()).init({ object: this });
         this.animation.start();
