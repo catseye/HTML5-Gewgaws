@@ -16,7 +16,6 @@ function launch(prefix, containerId) {
                 yoob.makeLineBreak(container);
                 yoob.makeSliderPlusTextInput(container, "Segment length:", 2, 25, (2), 5, function(v) {
                     gewgaw.dist = v;
-                    gewgaw.reset();
                 });
                 yoob.makeLineBreak(container);
                 yoob.makeSliderPlusTextInput(container, "Start index", 1, 10000, 5, 1, function(v) {
@@ -32,7 +31,6 @@ function launch(prefix, containerId) {
                 yoob.makeCheckbox(
                     container, true, "opaque", function(bool) {
                         gewgaw.ctx.strokeStyle = bool ? "black" : "rgba(0,0,0,0.1)";
-                        gewgaw.reset();
                     }
                 );
                 yoob.makeCheckbox(
@@ -80,7 +78,7 @@ KolakoskiKurve = function() {
 
         this.index = this.startIndex;
 
-        this.sequence = this.generate(this.endIndex);
+        this.generate(this.endIndex);  // sets this.sequence and this.genIndex
 
         if (this.animation) this.animation.stop();
         this.animation = (new yoob.Animation()).init({ object: this });
@@ -135,17 +133,22 @@ KolakoskiKurve = function() {
     };
 
     /*
-     * Generate at least n values of the Kolakoski sequence, starting at the beginning.
+     * Generate at least n values of the Kolakoski sequence, starting at where-ever we
+     * last left off (or the beginning, if we were never called before.)
      */
     this.generate = function(n) {
-        var sequence = [1, 2, 2];
-        for (var i = 3; sequence.length < n; i++) {
-            var newValue = i % 2 === 1 ? 1 : 2;
-            sequence.push(newValue);
-            if (sequence[i - 1] === 2) {
-                sequence.push(newValue);
+        if (this.sequence === undefined || this.sequence === null || this.sequence.length < 3) {
+            this.sequence = [1, 2, 2];
+        }
+        if (this.genIndex === undefined || this.genIndex === null) {
+            this.genIndex = 3;
+        }
+        for (; this.sequence.length < n; this.genIndex++) {
+            var newValue = this.genIndex % 2 === 1 ? 1 : 2;
+            this.sequence.push(newValue);
+            if (this.sequence[this.genIndex - 1] === 2) {
+                this.sequence.push(newValue);
             }
         }
-        return sequence;
     };
 };
