@@ -14,6 +14,10 @@ function launch(prefix, containerId) {
 
                 var canvas = yoob.makeCanvas(container, 800, 600);
                 yoob.makeLineBreak(container);
+                yoob.makeSliderPlusTextInput(container, "Segment length:", 2, 25, (2), 5, function(v) {
+                    gewgaw.dist = v;
+                });
+                yoob.makeLineBreak(container);
                 yoob.makeCheckbox(
                     container, true, "opaque", function(bool) {
                         gewgaw.ctx.strokeStyle = bool ? "black" : "rgba(0,0,0,0.1)";
@@ -43,9 +47,7 @@ KolakoskiKurve = function() {
 
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = "black";
-        //this.ctx.strokeStyle = "rgba(0,0,0,0.1)";
         this.ctx.globalCompositeOperation = 'source-over';
-        //this.ctx.globalCompositeOperation = 'xor';
         this.dist = 5;
 
         this.startIndex = 0;
