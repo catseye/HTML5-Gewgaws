@@ -10,9 +10,25 @@ function launch(prefix, containerId) {
         elem.onload = function() {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
-                var t = new KolakoskiKurve();
+                var gewgaw = new KolakoskiKurve();
+
                 var canvas = yoob.makeCanvas(container, 800, 600);
-                t.init(canvas);
+                yoob.makeLineBreak(container);
+                yoob.makeCheckbox(
+                    container, true, "opaque", function(bool) {
+                        gewgaw.ctx.strokeStyle = bool ? "black" : "rgba(0,0,0,0.1)";
+                    }
+                );
+                yoob.makeCheckbox(
+                    container, false, "xor", function(bool) {
+                        gewgaw.ctx.globalCompositeOperation = bool ? "xor" : "source-over";
+                    }
+                );
+                yoob.makeLineBreak(container);
+                var button = yoob.makeButton(container, 'Reset', function() {
+                    gewgaw.reset();
+                });
+                gewgaw.init(canvas);
             }
         };
         document.body.appendChild(elem);
@@ -24,25 +40,34 @@ KolakoskiKurve = function() {
     this.init = function(canvas) {
         this.canvas = canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         this.ctx.lineWidth = 2;
         this.ctx.strokeStyle = "black";
         //this.ctx.strokeStyle = "rgba(0,0,0,0.1)";
         this.ctx.globalCompositeOperation = 'source-over';
         //this.ctx.globalCompositeOperation = 'xor';
-        this.x = this.canvas.width / 2;
-        this.y = this.canvas.height - 10;
-        this.y = this.canvas.height / 2;
-        this.theta = 0;
         this.dist = 5;
+
         this.startIndex = 0;
         this.endIndex = 10000;
         this.delay = -1;
         this.delayCounter = 0;
         this.stepSize = 10;
         this.sequence = this.generate(this.endIndex);
+        this.reset();
+    };
+
+    this.reset = function() {
+        this.ctx.fillStyle = 'white';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.x = this.canvas.width / 2;
+        this.y = this.canvas.height - 10;
+        this.y = this.canvas.height / 2;
+        this.theta = 0;
+
         this.index = this.startIndex;
+        if (this.animation) this.animation.stop();
         this.animation = (new yoob.Animation()).init({ object: this });
         this.animation.start();
     };

@@ -1,11 +1,3 @@
-/*
-  extra-style: |
-    #overlay {
-      border: 1px solid red;
-      position: absolute;
-      z-index: 100;
-    }
-*/
 function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
@@ -30,7 +22,7 @@ function launch(prefix, containerId) {
                 var canvas = yoob.makeCanvas(container, 600, 400);
                 canvas.style.zIndex = "0";
 
-                container.appendChild(document.createElement('br'));
+                yoob.makeLineBreak(container);
                 var show_blue = yoob.makeCheckbox(
                     container, true, "blue", t.setShowBlue
                 );
