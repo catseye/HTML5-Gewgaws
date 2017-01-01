@@ -12,17 +12,17 @@ function launch(prefix, containerId) {
                 var container = document.getElementById(containerId);
                 var canvas = yoob.makeCanvas(container, 800, 400);
                 yoob.makeLineBreak(container);
-                var t = new CircusXamulus();
-                yoob.makeButton(container, "Reset", function() { t.reset(); });
-                t.init(canvas);
+                var gewgaw = new CircusXamulus().init({ canvas: canvas });
+                yoob.makeButton(container, "Reset", function() { gewgaw.reset(); });
             }
         };
         document.body.appendChild(elem);
     }
 }
 
-var twoPi = Math.PI * 2;
-var degrees = twoPi / 360;
+
+var TWO_PI = Math.PI * 2;
+
 
 Circle = function() {
     this.init = function(x, y, r) {
@@ -30,23 +30,25 @@ Circle = function() {
         this.y = y;
         this.r = r;
         this.drawn = false;
+
+        return this;
     };
 
     this.draw = function(ctx) {
         ctx.beginPath();
         ctx.lineWidth = 2;
         ctx.strokeStyle = "black";
-        ctx.arc(this.x, this.y, this.r, 0, 2 * Math.PI, false);
+        ctx.arc(this.x, this.y, this.r, 0, TWO_PI, false);
         ctx.stroke();
         this.drawn = true;
 
         if (false) {
             /* pick two points on the circle and draw a chord */
             if (this.r > 30) {
-                var th1 = Math.random() * twoPi;
+                var th1 = Math.random() * TWO_PI;
                 var x1 = this.x + Math.cos(th1) * this.r;
                 var y1 = this.y + Math.sin(th1) * this.r;
-                var th2 = Math.random() * twoPi;
+                var th2 = Math.random() * TWO_PI;
                 var x2 = this.x + Math.cos(th2) * this.r;
                 var y2 = this.y + Math.sin(th2) * this.r;
                 ctx.beginPath();
@@ -58,60 +60,59 @@ Circle = function() {
     };
 };
 
-CircusXamulus = function() {
-    var ctx;
-    var canvas;
-    var circles;
 
-    this.init = function(c) {
-        canvas = c;
-        ctx = canvas.getContext("2d");
+CircusXamulus = function() {
+
+    this.init = function(cfg) {
+        this.canvas = cfg.canvas;
+        this.ctx = this.canvas.getContext("2d");
         this.reset();
         this.animation = (new yoob.Animation()).init({
             object: this,
             tickTime: 1000.0 / 50.0
         }).start();
+
+        return this;
     };
     
     this.reset = function() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        circles = [];
+        this.ctx.fillStyle = "white";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.circles = [];
     };
 
     this.draw = function() {
-        for (var i = 0; i < circles.length; i++) {
-            var circle = circles[i];
+        for (var i = 0; i < this.circles.length; i++) {
+            var circle = this.circles[i];
             if (!circle.drawn) {
-                circle.draw(ctx);
+                circle.draw(this.ctx);
             }
         }
     };
 
     this.update = function() {
-        if (circles.length > 2000) return;
-        var c = new Circle();
+        if (this.circles.length > 2000) return;
         var tries = 0;
         var done = false;
         while (!done && tries < 100) {
             tries++;
             done = true;
             var r = Math.floor(Math.random() * 50);
-            var x = r + Math.random() * (canvas.width - r*2);
-            var y = r + Math.random() * (canvas.height - r*2);
-            for (var i = 0; i < circles.length; i++) {
-                var k = circles[i];
-                var dx = x - k.x;
-                var dy = y - k.y;
-                var d = Math.sqrt(dx*dx + dy*dy);
-                if (d < k.r) {
+            var x = r + Math.random() * (this.canvas.width - r*2);
+            var y = r + Math.random() * (this.canvas.height - r*2);
+            for (var i = 0; i < this.circles.length; i++) {
+                var circle = this.circles[i];
+                var dx = x - circle.x;
+                var dy = y - circle.y;
+                var d = Math.sqrt(dx * dx + dy * dy);
+                if (d < circle.r) {
                     done = false;
                     break;
-                } else if (r > (d - k.r)) {
-                    r = (d - k.r);
+                } else if (r > (d - circle.r)) {
+                    r = (d - circle.r);
                 }
             }
         }
-        c.init(x, y, r);
-        circles.push(c);
+        this.circles.push(new Circle().init(x, y, r));
     };
 };
