@@ -28,20 +28,19 @@ function launch(prefix, containerId) {
                     gewgaw.reset();
                 });
                 yoob.makeLineBreak(container);
-                yoob.makeCheckbox(
-                    container, true, "opaque", function(bool) {
-                        gewgaw.ctx.strokeStyle = bool ? "black" : "rgba(0,0,0,0.1)";
-                    }
-                );
-                yoob.makeCheckbox(
-                    container, false, "xor", function(bool) {
-                        gewgaw.ctx.globalCompositeOperation = bool ? "xor" : "source-over";
-                        gewgaw.reset();
-                    }
-                );
+                yoob.makeSelect(container, "Draw style", [
+                    ['opaque', "Opaque"],
+                    ['translucent', "Translucent"],
+                    ['xor', "XOR"]
+                ], function(style) {
+                    gewgaw.setStyle(style);
+                }, 'opaque');
                 yoob.makeLineBreak(container);
                 var button = yoob.makeButton(container, 'Reset', function() {
-                    gewgaw.reset();
+                    // this circumlocution is only to avoid weird glitching when reseting 'xor' style.
+                    var style = gewgaw.style;
+                    gewgaw.setStyle('opaque');
+                    gewgaw.setStyle(style);
                 });
                 gewgaw.init(canvas);
             }
@@ -150,5 +149,23 @@ KolakoskiKurve = function() {
                 this.sequence.push(newValue);
             }
         }
+    };
+
+    this.setStyle = function(style) {
+        this.style = style;
+        if (!this.ctx) return;
+        if (style === 'opaque') {
+            this.ctx.globalCompositeOperation = "source-over";
+            this.ctx.strokeStyle = "black";
+        } else if (style === 'translucent') {
+            this.ctx.globalCompositeOperation = "source-over";
+            this.ctx.strokeStyle = "rgba(0,0,0,0.1)";
+        } else if (style === 'xor') {
+            this.ctx.strokeStyle = "black";
+            this.ctx.globalCompositeOperation = "xor";
+        } else {
+            alert(style + '?');
+        }
+        this.reset();
     };
 };
