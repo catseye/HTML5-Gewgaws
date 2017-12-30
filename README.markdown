@@ -35,7 +35,7 @@ and they can be manually instantiated too.)
 
 You ought to be able to say something like this to start any of these gewgaws:
 
-    <script src="index.js"></script>
+    <script src="some-gewgaw.js"></script>
     <script>
       launch('../path/to/scripts', 'element_id', config);
     </script>
