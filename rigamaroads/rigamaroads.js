@@ -26,14 +26,14 @@ function launch(prefix, containerId, config) {
 
             var canvas = yoob.makeCanvas(container, GRID_WIDTH * CELL_WIDTH, GRID_HEIGHT * CELL_HEIGHT);
 
-            var gewgaw = (new StreetsOfRigamarole()).init({ canvas: canvas });
+            var gewgaw = (new Rigamaroads()).init({ canvas: canvas });
         };
         document.body.appendChild(elem);
     }
 }
 
 
-var StreetsOfRigamarole = function() {
+var Rigamaroads = function() {
     this.init = function(cfg) {
         this.canvas = cfg.canvas;
         this.ctx = this.canvas.getContext('2d');
