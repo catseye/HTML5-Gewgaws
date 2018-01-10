@@ -12,13 +12,13 @@ between automata, games, and art.
 or whatever, it will probably have its own repo instead of being in this one.)
 
 If you want to see these gewgaws in action, you should head on over to
-[the online Gallery at Cat's Eye Technologies](http://catseye.tc/node/Online_Installation).
+[the Gewgaws article at Cat's Eye Technologies](http://catseye.tc/article/Gewgaws).
 
-Many of these gewgaws make use of the [yoob.js](http://catseye.tc/node/yoob.js)
-library.  Generally, the gewgaw will use the yoob.js files from the
-`common-yoob.js-0.x` directory in the root of this repo.  If it needs a
-different version of yoob.js for some reason, it may use a local `yoob`
-subdirectory.
+Many of these gewgaws make use of files from the [yoob.js](http://catseye.tc/node/yoob.js)
+library.  Generally, these files reside in a local `yoob` subdirectory of
+the gegaw's directory.  There is some duplication of these files, but this
+is minor compared to the flexibility of allowing each gewgaw to maintain
+its own versions of its yoob.js files.
 
 The contents of this repo are in the public domain; see the file `UNLICENSE`
 for more information.  This includes any images found within, which I have
