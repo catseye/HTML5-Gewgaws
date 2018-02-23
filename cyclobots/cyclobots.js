@@ -2,8 +2,7 @@ function launch(prefix, containerId, config) {
     var config = config || {};
     var deps = [
         "element-factory.js",
-        "animation.js",
-        "full-screen-detector.js"
+        "animation.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
@@ -26,38 +25,6 @@ function launch(prefix, containerId, config) {
                 var button = yoob.makeButton(
                     controlPanel, 'Revolution!', t.shuffle
                 );
-
-                var resize = function() {
-                    canvas.width = canvas.clientWidth;
-                    canvas.height = canvas.clientHeight;
-                };
-
-                window.onload = function() {
-                    resize();
-                    t.init(canvas);
-                };
-                window.onresize = resize;
-
-                var header = document.getElementsByTagName('header')[0];
-
-                new yoob.FullScreenDetector({
-                    onchange: function(fullScreen) {
-                        if (fullScreen) {
-                            canvas.style.width = "100%";
-                            canvas.style.height = "100%";
-                            if (header) header.style.display = "none";
-                            controlPanel.style.display = "none";
-                            resize();
-                        } else {
-                            canvas.style.width = null;
-                            canvas.style.height = null;
-                            if (header) header.style.display = "block";
-                            controlPanel.style.display = "block";
-                            resize();
-                        }
-                    }
-                });
-
             }
         };
         document.body.appendChild(elem);
