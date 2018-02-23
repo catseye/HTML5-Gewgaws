@@ -12,7 +12,7 @@ function launch(prefix, containerId, config) {
             if (++loaded == deps.length) {
                 var container = document.getElementById(containerId);
 
-                var t = new Cyclobots();
+                var gewgaw = new Cyclobots();
                 var canvas = yoob.makeCanvas(container);
 
                 if (config.width) canvas.width = config.width;
@@ -20,11 +20,12 @@ function launch(prefix, containerId, config) {
 
                 var controlPanel = yoob.makeDiv(container);
                 var showAngles = yoob.makeCheckbox(
-                    controlPanel, false, "show angles", t.setDrawAngles
+                    controlPanel, false, "show angles", gewgaw.setDrawAngles
                 );
                 var button = yoob.makeButton(
-                    controlPanel, 'Revolution!', t.shuffle
+                    controlPanel, 'Revolution!', gewgaw.shuffle
                 );
+                gewgaw.init(canvas);
             }
         };
         document.body.appendChild(elem);
