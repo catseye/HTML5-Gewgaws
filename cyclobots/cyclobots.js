@@ -185,7 +185,8 @@ Cyclobots = function() {
         });
 
         this.animation = (new yoob.Animation()).init({
-            object: this
+            object: this,
+            mode: 'dumb-quantum'
         });
         this.animation.start();
     };

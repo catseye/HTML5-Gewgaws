@@ -1,5 +1,5 @@
 /*
- * This file is part of yoob.js version 0.7
+ * This file is part of yoob.js version 0.14-PRE
  * Available from https://github.com/catseye/yoob.js/
  * This file is in the public domain.  See http://unlicense.org/ for details.
  */
@@ -54,7 +54,7 @@ yoob.Animation = function() {
     /*
      * Initialize a yoob.Animation.  Takes a configuration dictionary:
      *
-     *   mode          'quantum' (default) or 'proportional'
+     *   mode          'quantum' (default), 'dumb-quantum', or 'proportional'
      *   object        the object to call methods on
      *   tickTime      in msec.  for quantum only. default = 1/60th sec
      *   lastTime      internal (but see below)
@@ -71,13 +71,17 @@ yoob.Animation = function() {
      * milliseconds that have passed.  Neither method is passed any
      * parameters.
      *
-     * update() (or draw(), in 'proportional' mode only) may return the 
-     * exact object 'false' to force the animation to stop immediately.
+     * In the 'dumb-quantum' mode, the object's draw() method is called on
+     * each animation frame, and the object's update() method is called once
+     * on each animation frame.  Neither method is passed any parameters.
      *
      * In the 'proportional' mode, the object's draw() method is called on
      * each animation frame, and the amount of time (in milliseconds) that has
      * elapsed since the last time it was called (or 0 if it was never
      * previously called) is passed as the first and only parameter.
+     *
+     * update() (or draw(), in 'proportional' mode only) may return the
+     * exact object 'false' to force the animation to stop immediately.
      */
     this.init = function(cfg) {
         this.object = cfg.object;
@@ -110,6 +114,17 @@ yoob.Animation = function() {
                     }
                 }
                 $this.lastTime = time;
+                if ($this.request) {
+                    $this.request = requestAnimationFrame(animFrame);
+                }
+            };
+        } else if (this.mode === 'dumb-quantum') {
+            var animFrame = function(time) {
+                $this.object.draw();
+                var result = $this.object.update();
+                if (result === false) {
+                    $this.request = null;
+                }
                 if ($this.request) {
                     $this.request = requestAnimationFrame(animFrame);
                 }
