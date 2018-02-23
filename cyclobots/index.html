@@ -22,20 +22,21 @@ h1 {
     line-height: 1.5em;
 }
 canvas {
-    width: 80%;
-    height: 80%;
-    background: pink;
+    background: white;
+    border: 1px solid blue;
 }
   </style>
 </head>
-<body id="container">
+<body>
 
 <header>
   <h1>Cyclobots</h1>
 </header>
 
+<div id="container"></div>
+
 </body>
 <script src="cyclobots.js"></script>
 <script>
-  launch('yoob/', 'container');
+  launch('yoob/', 'container', { width: 640, height: 480 });
 </script>
