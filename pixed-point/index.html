@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <title>Pixed-point</title>
+  <style>
+body { text-align: center; }
+#container {
+  text-align: center;
+}
+#container canvas {
+  display: inline-block;
+  margin: 2em;
+}
+#container div {
+  display: inline-block;
+  text-align: right;
+}
+  </style>
+</head>
+<body>
+
+<h1>Pixed-point</h1>
+
+<div id="container"></div>
+
+</body>
+<script src="pixed-point.js"></script>
+<script>
+  launch('yoob/', 'container', {
+      // to not have to mess with cross-domain security whatever
+      // when running locally, download this image from here:
+      // http://static.catseye.tc/archive/kofler.dot.at/c64_images/c64_upp.gif
+      // and place it in this directory
+      imgUrl: "c64_upp.gif"
+  }
+);
+</script>
