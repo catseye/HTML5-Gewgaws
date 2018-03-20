@@ -62,6 +62,63 @@ function launch(prefix, containerId) {
 
 var QUADRANT = Math.PI / 2;
 var TWO_PI = Math.PI * 2;
+var DEGREE = TWO_PI / 360.0;
+
+
+Segment = function() {
+    this.init = function(cx, cy, radius, angle1, angle2) {
+        this.cx = cx;
+        this.cy = cy;
+        this.radius = radius;
+        this.angle1 = angle1;
+        this.angle2 = angle2;
+        return this;
+    }
+
+    this.getLine = function(tweak) {
+        var angle1 = this.angle1 + tweak;
+        var angle2 = this.angle2 + tweak;
+        var x1 = this.cx + Math.cos(angle1) * this.radius;
+        var y1 = this.cy + Math.sin(angle1) * this.radius;
+        var x2 = this.cx + Math.cos(angle2) * this.radius;
+        var y2 = this.cy + Math.sin(angle2) * this.radius;
+        return [[x1, y1], [x2, y2]];
+    };
+
+    this.drawConnectTo = function(ctx, nextSegment) {
+        var l1 = this.getLine(DEGREE * -0.5);
+        var l2 = nextSegment.getLine(DEGREE * 0.5);
+
+        // the arguments represent 2 lines, (x1,y1)-(x2,y2) and (x3,y3)-(x4,y4)
+
+        var x1 = l1[0][0];
+        var y1 = l1[0][1];
+
+        var x2 = l1[1][0];
+        var y2 = l1[1][1];
+
+        var x3 = l2[0][0];
+        var y3 = l2[0][1];
+
+        var x4 = l2[1][0];
+        var y4 = l2[1][1];
+
+        // find their midpoints:
+        var xm1 = (x1 + x2) * 0.50;
+        var ym1 = (y1 + y2) * 0.50;
+
+        var xm2 = (x3 + x4) * 0.50;
+        var ym2 = (y3 + y4) * 0.50;
+
+        ctx.moveTo(xm1, ym1);
+        ctx.bezierCurveTo(
+            x2, y2,
+            x3, y3,
+            xm2, ym2
+        );
+    };
+};
+
 
 BezierKnots = function() {
     this.init = function(cfg) {
@@ -83,8 +140,6 @@ BezierKnots = function() {
         this.draw();
     };
 
-    /* Utilities */
-
     this.shuffled = function(a) {
         var b = [];
         while (a.length > 0) {
@@ -93,98 +148,24 @@ BezierKnots = function() {
         return b;
     };
 
-    this.pathSegment = function(ctx, cx, cy, r1, r2, th1, th2) {
-        ctx.arc(cx, cy, r1, th1, th2, false);
-        ctx.arc(cx, cy, r2, th2, th1, true);
-    };
-
-    this.fillSegment = function(ctx, cx, cy, r1, r2, th1, th2) {
-        ctx.beginPath();
-        this.pathSegment(ctx, cx, cy, r1, r2, th1, th2);
-        ctx.fill();
-    };
-
-    this.setFillColour = function(r, g, b) {
-        this.ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-    };
-
-    this.setFillHSL = function(h, s, l) {
-        if (l === -1) {
-            l = 0.5 + (Math.random() - 0.5) * this.scale;
-        }
-        h = Math.floor(h) % 360;
-        s = '' + (s * 100) + '%';
-        l = '' + (l * 100) + '%';
-        this.ctx.fillStyle = 'hsl(' + h + ',' + s + ',' + l + ')';
-    };
-
-    this.bezierConnect = function(x1, y1, x2, y2, x3, y3, x4, y4) {
-        // the arguments represent 2 lines, (x1,y1)-(x2,y2) and (x3,y3)-(x4,y4)
-
-        // find their midpoints:
-        var xm1 = (x1 + x2) / 2;
-        var ym1 = (y1 + y2) / 2;
-
-        var xm2 = (x3 + x4) / 2;
-        var ym2 = (y3 + y4) / 2;
-
-        this.ctx.moveTo(xm1, ym1);
-        this.ctx.bezierCurveTo(
-            x2, y2,
-            x3, y3,
-            xm2, ym2);
-    };
-
-    this.bezierConnectLines = function(l1, l2) {
-        // the arguments represent 2 lines, (x1,y1)-(x2,y2) and (x3,y3)-(x4,y4)
-
-        var x1 = l1[0][0];
-        var y1 = l1[0][1];
-
-        var x2 = l1[1][0];
-        var y2 = l1[1][1];
-
-        var x3 = l2[0][0];
-        var y3 = l2[0][1];
-
-        var x4 = l2[1][0];
-        var y4 = l2[1][1];
-
-        this.bezierConnect(x1, y1, x2, y2, x3, y3, x4, y4);
-    };
-
-    this.createRandomLine = function() {
-        var x1 = Math.floor(Math.random() * this.canvas.width);
-        var y1 = Math.floor(Math.random() * this.canvas.height);
-        var x2 = Math.floor(Math.random() * this.canvas.width);
-        var y2 = Math.floor(Math.random() * this.canvas.height);
-        return [[x1, y1], [x2, y2]];
-    };
-
-    this.createLine = function(cx, cy, radius, angle1, angle2) {
-        var x1 = cx + Math.cos(angle1) * radius;
-        var y1 = cy + Math.sin(angle1) * radius;
-        var x2 = cx + Math.cos(angle2) * radius;
-        var y2 = cy + Math.sin(angle2) * radius;
-        return [[x1, y1], [x2, y2]];
-    };
-
-    this.createLineSets = function(cx, cy, numSides, numRadii) {
+    this.createSegmentSets = function(cx, cy, numSides, numRadii) {
         var sets = [];
 
         for (var i = 0; i < numSides; i++) {
-            var lines = [];
+            var segments = [];
 
             for (var pos = 0; pos < numRadii; pos++) {
                 radius = (cx / numRadii) * (pos + 1);
-                lines.push(this.createLine(
+
+                segments.push((new Segment()).init(
                     cx, cy, radius,
                     (i / numSides) * TWO_PI - Math.PI/2,
                     ((i + 1) / numSides) * TWO_PI - Math.PI/2
                 ));
+
             }
 
-            sets.push(lines);
+            sets.push(segments);
         }
 
         // Now shuffle the sets.
@@ -199,44 +180,45 @@ BezierKnots = function() {
         var cx = this.canvas.width / 2;
         var cy = this.canvas.height / 2;
 
-        var lineSets = this.createLineSets(cx, cy, this.numSides, this.numRadii);
+        var segmentSets = this.createSegmentSets(cx, cy, this.numSides, this.numRadii);
 
         var colours = ['red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'orange'];
 
-        for (var j = 0; j < lineSets.length; j++) {
+        var minJ = 0;
+        var maxJ = segmentSets.length - 1;
+        //minJ = 5; maxJ = 5;
+        for (var j = minJ; j <= maxJ; j++) {
+            var segmentSet = segmentSets[j];
 
             // shuffle the indexes so we don't always draw the same colours over other colours
             var indexes = [];
-            for (var i = 0; i < lineSets[j].length; i++) {
+            for (var i = 0; i < segmentSet.length; i++) {
                 indexes.push(i);
             }
             indexes = this.shuffled(indexes);
 
-            for (var n = 0; n < lineSets[j].length; n++) {
+            for (var n = 0; n < segmentSet.length; n++) {
 
                 i = indexes[n];
 
-                var l1 = lineSets[j][i];
-                var l2;
+                var segment = segmentSets[j][i];
+                var nextSegment = segmentSets[(j+1) % segmentSets.length][i];
 
-                if (j + 1 >= lineSets.length) {
-                    l2 = lineSets[0][i];
-                } else {
-                    l2 = lineSets[j+1][i];
+                drawBg = false;
+                if (drawBg) {
+                    this.ctx.strokeStyle = 'black';
+                    this.ctx.lineWidth = this.lineWidth + 3;
+
+                    this.ctx.beginPath();
+                    segment.drawConnectTo(this.ctx, nextSegment);
+                    this.ctx.stroke();
                 }
-
-                this.ctx.strokeStyle = 'black';
-                this.ctx.lineWidth = this.lineWidth + 3;
-
-                this.ctx.beginPath();
-                this.bezierConnectLines(l1, l2);
-                this.ctx.stroke();
 
                 this.ctx.strokeStyle = colours[i % colours.length];
                 this.ctx.lineWidth = this.lineWidth;
 
                 this.ctx.beginPath();
-                this.bezierConnectLines(l1, l2);
+                segment.drawConnectTo(this.ctx, nextSegment);
                 this.ctx.stroke();
             }
         }
