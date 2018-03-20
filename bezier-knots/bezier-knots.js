@@ -26,7 +26,7 @@ function launch(prefix, containerId) {
                     value: 10,
                     callback: function(v) {
                         gewgaw.lineWidth = v;
-                        gewgaw.reset();
+                        gewgaw.redraw();
                     }
                 });
                 yoob.makeLineBreak(panel);
@@ -37,7 +37,7 @@ function launch(prefix, containerId) {
                     value: 3,
                     callback: function(v) {
                         gewgaw.edgeWidth = v;
-                        gewgaw.reset();
+                        gewgaw.redraw();
                     }
                 });
                 yoob.makeLineBreak(panel);
@@ -48,7 +48,7 @@ function launch(prefix, containerId) {
                     value: 6,
                     callback: function(v) {
                         gewgaw.numSegments = v;
-                        gewgaw.reset();
+                        gewgaw.reroll();
                     }
                 });
                 yoob.makeLineBreak(panel);
@@ -59,11 +59,11 @@ function launch(prefix, containerId) {
                     value: 6,
                     callback: function(v) {
                         gewgaw.numRadii = v;
-                        gewgaw.reset();
+                        gewgaw.reroll();
                     }
                 });
                 yoob.makeLineBreak(panel);
-                var resetButton = yoob.makeButton(panel, 'Reset', function() { gewgaw.reset(); });
+                var rerollButton = yoob.makeButton(panel, 'Re-roll', function() { gewgaw.reroll(); });
             }
         };
         document.body.appendChild(elem);
@@ -141,12 +141,31 @@ BezierKnots = function() {
         this.numSegments = cfg.numSegments || 6;
         this.numRadii = cfg.numRadii || 6;
 
-        this.reset();
+        this.reroll();
 
         return this;
     };
 
-    this.reset = function() {
+    this.reroll = function() {
+        var cx = this.canvas.width / 2;
+        var cy = this.canvas.height / 2;
+        this.segmentSets = this.createSegmentSets(cx, cy, this.numSegments, this.numRadii);
+
+        this.indexSets = [];
+        for (var j = 0; j < this.segmentSets.length; j++) {
+            // shuffle the indexes so we don't always draw the same colours over other colours
+            var indexes = [];
+            for (var i = 0; i < this.segmentSets[j].length; i++) {
+                indexes.push(i);
+            }
+            indexes = this.shuffled(indexes);
+            this.indexSets.push(indexes);
+        }
+
+        this.redraw();
+    };
+
+    this.redraw = function() {
         this.ctx.fillStyle = "black";
         this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
@@ -185,30 +204,19 @@ BezierKnots = function() {
     };
 
     this.draw = function() {
-        var cx = this.canvas.width / 2;
-        var cy = this.canvas.height / 2;
-
-        var segmentSets = this.createSegmentSets(cx, cy, this.numSegments, this.numRadii);
-
         var colours = ['red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'orange'];
 
         var minJ = 0;
-        var maxJ = segmentSets.length - 1;
+        var maxJ = this.segmentSets.length - 1;
 
         for (var j = minJ; j <= maxJ; j++) {
-            var segmentSet = segmentSets[j];
-
-            // shuffle the indexes so we don't always draw the same colours over other colours
-            var indexes = [];
-            for (var i = 0; i < segmentSet.length; i++) {
-                indexes.push(i);
-            }
-            indexes = this.shuffled(indexes);
+            var segmentSet = this.segmentSets[j];
+            var indexes = this.indexSets[j];
 
             for (var n = 0; n < segmentSet.length; n++) {
                 var i = indexes[n];
                 var segment = segmentSet[i];
-                var nextSegment = segmentSets[(j+1) % segmentSets.length][i];
+                var nextSegment = this.segmentSets[(j+1) % this.segmentSets.length][i];
 
                 this.ctx.strokeStyle = 'black';
                 this.ctx.lineWidth = this.lineWidth + this.edgeWidth;
