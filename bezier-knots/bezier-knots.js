@@ -26,6 +26,29 @@ function launch(prefix, containerId) {
                     value: 5,
                     callback: function(v) {
                         gewgaw.lineWidth = v;
+                        gewgaw.reset();
+                    }
+                });
+                yoob.makeLineBreak(panel);
+                var numSidesControl = yoob.makeRangeControl(panel, {
+                    label: 'Number of nodes:',
+                    min: 1,
+                    max: 20,
+                    value: 6,
+                    callback: function(v) {
+                        gewgaw.numSides = v;
+                        gewgaw.reset();
+                    }
+                });
+                yoob.makeLineBreak(panel);
+                var numRadiiControl = yoob.makeRangeControl(panel, {
+                    label: 'Number of rings:',
+                    min: 1,
+                    max: 20,
+                    value: 6,
+                    callback: function(v) {
+                        gewgaw.numRadii = v;
+                        gewgaw.reset();
                     }
                 });
                 yoob.makeLineBreak(panel);
@@ -43,8 +66,10 @@ var TWO_PI = Math.PI * 2;
 BezierKnots = function() {
     this.init = function(cfg) {
         this.canvas = cfg.canvas;
-        this.lineWidth = cfg.lineWidth;
         this.ctx = this.canvas.getContext('2d');
+        this.lineWidth = cfg.lineWidth;
+        this.numSides = cfg.numSides || 6;
+        this.numRadii = cfg.numRadii || 6;
 
         this.reset();
 
@@ -144,18 +169,18 @@ BezierKnots = function() {
         return [[x1, y1], [x2, y2]];
     };
 
-    this.createLineSets = function(cx, cy, NUM_SIDES, NUM_RADII) {
+    this.createLineSets = function(cx, cy, numSides, numRadii) {
         var sets = [];
 
-        for (var i = 0; i < NUM_SIDES; i++) {
+        for (var i = 0; i < numSides; i++) {
             var lines = [];
 
-            for (var pos = 0; pos < NUM_RADII; pos++) {
-                radius = (cx / NUM_RADII) * (pos + 1);
+            for (var pos = 0; pos < numRadii; pos++) {
+                radius = (cx / numRadii) * (pos + 1);
                 lines.push(this.createLine(
                     cx, cy, radius,
-                    (i / NUM_SIDES) * TWO_PI - Math.PI/2,
-                    ((i + 1) / NUM_SIDES) * TWO_PI - Math.PI/2
+                    (i / numSides) * TWO_PI - Math.PI/2,
+                    ((i + 1) / numSides) * TWO_PI - Math.PI/2
                 ));
             }
 
@@ -191,10 +216,7 @@ BezierKnots = function() {
         var cx = this.canvas.width / 2;
         var cy = this.canvas.height / 2;
 
-        var NUM_SIDES = 6;
-        var NUM_RADII = 6;
-
-        var lineSets = this.createLineSets(cx, cy, NUM_SIDES, NUM_RADII);
+        var lineSets = this.createLineSets(cx, cy, this.numSides, this.numRadii);
 
         var colours = ['red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'orange'];
 
