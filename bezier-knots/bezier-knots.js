@@ -19,7 +19,7 @@ function launch(prefix, containerId) {
                 });
 
                 var panel = yoob.makeDiv(container);
-                var thicknessControl = yoob.makeRangeControl(panel, {
+                var lineThicknessControl = yoob.makeRangeControl(panel, {
                     label: 'Line thickness:',
                     min: 1,
                     max: 30,
@@ -30,13 +30,24 @@ function launch(prefix, containerId) {
                     }
                 });
                 yoob.makeLineBreak(panel);
-                var numSidesControl = yoob.makeRangeControl(panel, {
-                    label: 'Number of nodes:',
+                var edgeThicknessControl = yoob.makeRangeControl(panel, {
+                    label: 'Edge thickness:',
+                    min: 0,
+                    max: 20,
+                    value: 3,
+                    callback: function(v) {
+                        gewgaw.edgeWidth = v;
+                        gewgaw.reset();
+                    }
+                });
+                yoob.makeLineBreak(panel);
+                var numSegmentsControl = yoob.makeRangeControl(panel, {
+                    label: 'Number of segments:',
                     min: 1,
                     max: 20,
                     value: 6,
                     callback: function(v) {
-                        gewgaw.numSides = v;
+                        gewgaw.numSegments = v;
                         gewgaw.reset();
                     }
                 });
@@ -124,8 +135,10 @@ BezierKnots = function() {
     this.init = function(cfg) {
         this.canvas = cfg.canvas;
         this.ctx = this.canvas.getContext('2d');
-        this.lineWidth = cfg.lineWidth;
-        this.numSides = cfg.numSides || 6;
+
+        this.lineWidth = cfg.lineWidth || 10;
+        this.edgeWidth = cfg.edgeWidth || 3;
+        this.numSegments = cfg.numSegments || 6;
         this.numRadii = cfg.numRadii || 6;
 
         this.reset();
@@ -148,10 +161,10 @@ BezierKnots = function() {
         return b;
     };
 
-    this.createSegmentSets = function(cx, cy, numSides, numRadii) {
+    this.createSegmentSets = function(cx, cy, numSegments, numRadii) {
         var sets = [];
 
-        for (var i = 0; i < numSides; i++) {
+        for (var i = 0; i < numSegments; i++) {
             var segments = [];
 
             for (var pos = 0; pos < numRadii; pos++) {
@@ -159,18 +172,13 @@ BezierKnots = function() {
 
                 segments.push((new Segment()).init(
                     cx, cy, radius,
-                    (i / numSides) * TWO_PI - Math.PI/2,
-                    ((i + 1) / numSides) * TWO_PI - Math.PI/2
+                    (i / numSegments) * TWO_PI - Math.PI/2,
+                    ((i + 1) / numSegments) * TWO_PI - Math.PI/2
                 ));
 
             }
 
-            sets.push(segments);
-        }
-
-        // Now shuffle the sets.
-        for (var i = 0; i < sets.length; i++) {
-            sets[i] = this.shuffled(sets[i]);
+            sets.push(this.shuffled(segments));
         }
 
         return sets;
@@ -180,13 +188,12 @@ BezierKnots = function() {
         var cx = this.canvas.width / 2;
         var cy = this.canvas.height / 2;
 
-        var segmentSets = this.createSegmentSets(cx, cy, this.numSides, this.numRadii);
+        var segmentSets = this.createSegmentSets(cx, cy, this.numSegments, this.numRadii);
 
         var colours = ['red', 'green', 'blue', 'cyan', 'magenta', 'yellow', 'orange'];
 
         var minJ = 0;
         var maxJ = segmentSets.length - 1;
-        //minJ = 5; maxJ = 5;
 
         for (var j = minJ; j <= maxJ; j++) {
             var segmentSet = segmentSets[j];
@@ -200,19 +207,19 @@ BezierKnots = function() {
 
             for (var n = 0; n < segmentSet.length; n++) {
                 var i = indexes[n];
-                var segment = segmentSets[j][i];
+                var segment = segmentSet[i];
                 var nextSegment = segmentSets[(j+1) % segmentSets.length][i];
-            
+
                 this.ctx.strokeStyle = 'black';
-                this.ctx.lineWidth = this.lineWidth + 3;
-            
+                this.ctx.lineWidth = this.lineWidth + this.edgeWidth;
+
                 this.ctx.beginPath();
                 segment.drawConnectTo(this.ctx, nextSegment, 0.0);
                 this.ctx.stroke();
 
                 this.ctx.strokeStyle = colours[i % colours.length];
                 this.ctx.lineWidth = this.lineWidth;
-            
+
                 this.ctx.beginPath();
                 segment.drawConnectTo(this.ctx, nextSegment, 0.5);
                 this.ctx.stroke();
