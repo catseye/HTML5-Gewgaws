@@ -22,8 +22,8 @@ function launch(prefix, containerId) {
                 var thicknessControl = yoob.makeRangeControl(panel, {
                     label: 'Line thickness:',
                     min: 1,
-                    max: 20,
-                    value: 5,
+                    max: 30,
+                    value: 10,
                     callback: function(v) {
                         gewgaw.lineWidth = v;
                         gewgaw.reset();
@@ -193,23 +193,6 @@ BezierKnots = function() {
         }
 
         return sets;
-    };
-
-    this.drawLines = function(lines) {
-        for (var i = 0; i < lines.length; i++) {
-            var l1 = lines[i];
-            var l2;
-
-            if (i + 1 >= lines.length) {
-                l2 = lines[0];
-            } else {
-                l2 = lines[i+1];
-            }
-
-            this.ctx.beginPath();
-            this.bezierConnectLines(l1, l2);
-            this.ctx.stroke();
-        }
     };
 
     this.draw = function() {
