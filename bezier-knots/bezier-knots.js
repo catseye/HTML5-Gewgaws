@@ -85,9 +85,9 @@ Segment = function() {
         return [[x1, y1], [x2, y2]];
     };
 
-    this.drawConnectTo = function(ctx, nextSegment) {
-        var l1 = this.getLine(DEGREE * -0.5);
-        var l2 = nextSegment.getLine(DEGREE * 0.5);
+    this.drawConnectTo = function(ctx, nextSegment, tweak) {
+        var l1 = this.getLine(DEGREE * -1 * tweak);
+        var l2 = nextSegment.getLine(DEGREE * tweak);
 
         // the arguments represent 2 lines, (x1,y1)-(x2,y2) and (x3,y3)-(x4,y4)
 
@@ -187,6 +187,7 @@ BezierKnots = function() {
         var minJ = 0;
         var maxJ = segmentSets.length - 1;
         //minJ = 5; maxJ = 5;
+
         for (var j = minJ; j <= maxJ; j++) {
             var segmentSet = segmentSets[j];
 
@@ -198,27 +199,22 @@ BezierKnots = function() {
             indexes = this.shuffled(indexes);
 
             for (var n = 0; n < segmentSet.length; n++) {
-
-                i = indexes[n];
-
+                var i = indexes[n];
                 var segment = segmentSets[j][i];
                 var nextSegment = segmentSets[(j+1) % segmentSets.length][i];
-
-                drawBg = false;
-                if (drawBg) {
-                    this.ctx.strokeStyle = 'black';
-                    this.ctx.lineWidth = this.lineWidth + 3;
-
-                    this.ctx.beginPath();
-                    segment.drawConnectTo(this.ctx, nextSegment);
-                    this.ctx.stroke();
-                }
+            
+                this.ctx.strokeStyle = 'black';
+                this.ctx.lineWidth = this.lineWidth + 3;
+            
+                this.ctx.beginPath();
+                segment.drawConnectTo(this.ctx, nextSegment, 0.0);
+                this.ctx.stroke();
 
                 this.ctx.strokeStyle = colours[i % colours.length];
                 this.ctx.lineWidth = this.lineWidth;
-
+            
                 this.ctx.beginPath();
-                segment.drawConnectTo(this.ctx, nextSegment);
+                segment.drawConnectTo(this.ctx, nextSegment, 0.5);
                 this.ctx.stroke();
             }
         }
