@@ -229,33 +229,13 @@ BezierKnots = function() {
             }
             indexes = this.shuffled(indexes);
 
-            for (var n = 0; n < lineSets[j].length; n++) {
+            this.ctx.strokeStyle = 'black';
+            this.ctx.lineWidth = this.lineWidth + 3;
+            this.drawLines(lineSets[j]);
 
-                i = indexes[n];
-
-                var l1 = lineSets[j][i];
-                var l2;
-
-                if (j + 1 >= lineSets.length) {
-                    l2 = lineSets[0][i];
-                } else {
-                    l2 = lineSets[j+1][i];
-                }
-
-                this.ctx.strokeStyle = 'black';
-                this.ctx.lineWidth = this.lineWidth + 3;
-
-                this.ctx.beginPath();
-                this.bezierConnectLines(l1, l2);
-                this.ctx.stroke();
-
-                this.ctx.strokeStyle = colours[i % colours.length];
-                this.ctx.lineWidth = this.lineWidth;
-
-                this.ctx.beginPath();
-                this.bezierConnectLines(l1, l2);
-                this.ctx.stroke();
-            }
+            this.ctx.strokeStyle = colours[i % colours.length];
+            this.ctx.lineWidth = this.lineWidth;
+            this.drawLines(lineSets[j]);
         }
     };
 };
