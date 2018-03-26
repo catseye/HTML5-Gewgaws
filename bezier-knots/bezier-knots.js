@@ -18,8 +18,16 @@ function launch(prefix, containerId) {
                     lineWidth: 10,
                 });
 
-                var panel = yoob.makeDiv(container);
-                var lineThicknessControl = yoob.makeRangeControl(panel, {
+                var panelContainer = yoob.makeDiv(container);
+                var panel = yoob.makeDiv(panelContainer);
+                panel.id = 'panel-container';
+
+                var makeRangeControl = function(cfg) {
+                    var bezel = yoob.makeDiv(panel);
+                    return yoob.makeRangeControl(bezel, cfg);
+                }
+
+                var lineThicknessControl = makeRangeControl({
                     label: 'Line thickness:',
                     min: 1,
                     max: 30,
@@ -29,8 +37,7 @@ function launch(prefix, containerId) {
                         gewgaw.redraw();
                     }
                 });
-                yoob.makeLineBreak(panel);
-                var edgeThicknessControl = yoob.makeRangeControl(panel, {
+                var edgeThicknessControl = makeRangeControl({
                     label: 'Edge thickness:',
                     min: 0,
                     max: 20,
@@ -40,8 +47,7 @@ function launch(prefix, containerId) {
                         gewgaw.redraw();
                     }
                 });
-                yoob.makeLineBreak(panel);
-                var numSegmentsControl = yoob.makeRangeControl(panel, {
+                var numSegmentsControl = makeRangeControl({
                     label: 'Number of segments:',
                     min: 1,
                     max: 20,
@@ -51,8 +57,7 @@ function launch(prefix, containerId) {
                         gewgaw.reroll();
                     }
                 });
-                yoob.makeLineBreak(panel);
-                var numRadiiControl = yoob.makeRangeControl(panel, {
+                var numRadiiControl = makeRangeControl({
                     label: 'Number of rings:',
                     min: 1,
                     max: 20,
@@ -62,7 +67,6 @@ function launch(prefix, containerId) {
                         gewgaw.reroll();
                     }
                 });
-                yoob.makeLineBreak(panel);
                 var rerollButton = yoob.makeButton(panel, 'Re-roll', function() { gewgaw.reroll(); });
             }
         };
