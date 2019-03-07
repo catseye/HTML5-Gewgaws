@@ -49,31 +49,45 @@ function launch(prefix, containerId, config) {
             );
             canvas.style.border = Math.round(BLOCK_WIDTH / 2) + 'px solid black';
 
-            var speed = getIntParam('speed', 5, 0, 50);
             yoob.makeLineBreak(container);
-            yoob.makeSliderPlusTextInput(
-                container, "Speed:", 0, 50, 5, speed,  function(v) {
+            var slidersPanel = yoob.makeDiv(container);
+            slidersPanel.id = "sliders-panel";
+            var speed = getIntParam('speed', 5, 0, 50);
+            yoob.makeRangeControl(slidersPanel, {
+                label: "Speed:",
+                min: 0,
+                max: 50,
+                value: speed,
+                callback: function(v) {
                     g.setDelay(50 - v);
                 }
-            );
+            });
             g.setDelay(50 - speed);
 
             var variety = getIntParam('variety', 1, 1, 256);
-            yoob.makeLineBreak(container);
-            yoob.makeSliderPlusTextInput(
-                container, "Variety:", 1, 256, 5, variety, function(v) {
+            yoob.makeLineBreak(slidersPanel);
+            yoob.makeRangeControl(slidersPanel, {
+                label: "Variety:",
+                min: 1,
+                max: 256,
+                value: variety,
+                callback: function(v) {
                     g.setVariety(v);
                 }
-            );
+            });
             g.setVariety(variety);
 
             var noise = getIntParam('noise', 0, 0, 100);
-            yoob.makeLineBreak(container);
-            yoob.makeSliderPlusTextInput(
-                container, "Noise:", 0, 100, 5, noise, function(v) {
+            yoob.makeLineBreak(slidersPanel);
+            yoob.makeRangeControl(slidersPanel, {
+                label: "Noise:",
+                min: 0,
+                max: 100,
+                value: noise,
+                callback: function(v) {
                     g.setNoise(v);
                 }
-            );
+            });
             g.setNoise(noise);
 
             var palette = params.palette || 'Tetrade';

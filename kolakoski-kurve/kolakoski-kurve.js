@@ -13,22 +13,41 @@ function launch(prefix, containerId) {
                 var gewgaw = new KolakoskiKurve();
 
                 var canvas = yoob.makeCanvas(container, 800, 600);
-                yoob.makeLineBreak(container);
-                yoob.makeSliderPlusTextInput(container, "Segment length:", 2, 25, (2), 5, function(v) {
-                    gewgaw.dist = v;
+                var slidersPanel = yoob.makeDiv(container);
+                slidersPanel.id = "sliders-panel";
+                yoob.makeRangeControl(slidersPanel, {
+                    label: "Segment length:",
+                    min: 2,
+                    max: 25,
+                    value: 5,
+                    callback: function(v) {
+                        gewgaw.dist = v;
+                    }
+                });
+                yoob.makeLineBreak(slidersPanel);
+                yoob.makeRangeControl(slidersPanel, {
+                    label: "Start index:",
+                    min: 1,
+                    max: 10000,
+                    value: 1,
+                    callback: function(v) {
+                        gewgaw.startIndex = v - 1;
+                        gewgaw.reset();
+                    }
+                });
+                yoob.makeLineBreak(slidersPanel);
+                yoob.makeRangeControl(slidersPanel, {
+                    label: "End index:",
+                    min: 1,
+                    max: 10000,
+                    value: 10000,
+                    callback: function(v) {
+                        gewgaw.endIndex = v - 1;
+                        gewgaw.reset();
+                    }
                 });
                 yoob.makeLineBreak(container);
-                yoob.makeSliderPlusTextInput(container, "Start index", 1, 10000, 5, 1, function(v) {
-                    gewgaw.startIndex = v - 1;
-                    gewgaw.reset();
-                });
-                yoob.makeLineBreak(container);
-                yoob.makeSliderPlusTextInput(container, "End index", 1, 10000, 5, 10000, function(v) {
-                    gewgaw.endIndex = v - 1;
-                    gewgaw.reset();
-                });
-                yoob.makeLineBreak(container);
-                yoob.makeSelect(container, "Draw style", [
+                yoob.makeSelect(container, "Draw style:", [
                     ['opaque', "Opaque"],
                     ['translucent', "Translucent"],
                     ['xor', "XOR"]
@@ -37,7 +56,7 @@ function launch(prefix, containerId) {
                 }, 'opaque');
                 yoob.makeLineBreak(container);
                 var button = yoob.makeButton(container, 'Reset', function() {
-                    // this circumlocution is only to avoid weird glitching when reseting 'xor' style.
+                    // this circumlocution is only to avoid weird glitching when resetting 'xor' style.
                     var style = gewgaw.style;
                     gewgaw.setStyle('opaque');
                     gewgaw.setStyle(style);

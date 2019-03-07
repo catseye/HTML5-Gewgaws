@@ -1,5 +1,5 @@
 /*
- * This file is part of yoob.js version 0.10
+ * This file is part of yoob.js version 0.13
  * Available from https://github.com/catseye/yoob.js/
  * This file is in the public domain.  See http://unlicense.org/ for details.
  */
@@ -210,7 +210,7 @@ yoob.makeSliderPlusTextInput = function(container, label, min_, max_, size, valu
     };
     textInput.onchange = function(e) {
         var v = parseInt(textInput.value, 10);
-        if (v !== NaN) {
+        if (!isNaN(v)) {
             slider.value = "" + v;
             fun(v);
         }
@@ -219,6 +219,78 @@ yoob.makeSliderPlusTextInput = function(container, label, min_, max_, size, valu
         'slider': slider,
         'textInput': textInput,
         'callback': fun
+    });
+};
+
+var RangeControl = function() {
+    this.init = function(cfg) {
+        this.slider = cfg.slider;
+        this.textInput = cfg.textInput;
+        this.callback = cfg.callback;
+        this.incButton = cfg.incButton;
+        this.decButton = cfg.decButton;
+        return this;
+    };
+
+    this.set = function(value) {
+        this.slider.value = "" + value;
+        this.textInput.value = "" + value;
+        this.callback(value);
+    };
+};
+
+yoob.makeRangeControl = function(container, config) {
+    var label = config.label;
+    var min_ = config['min'];
+    var max_ = config['max'];
+    var value = config.value || min_;
+    var callback = config.callback || function(v) {};
+    var textInputSize = config.textInputSize || 5;
+    var withButtons = config.withButtons === false ? false : true;
+
+    yoob.makeSpan(container, label);
+    var slider = yoob.makeSlider(container, min_, max_, value);
+    var s = "" + value;
+    var textInput = yoob.makeTextInput(container, textInputSize, s);
+    slider.onchange = function(e) {
+        textInput.value = slider.value;
+        callback(parseInt(slider.value, 10));
+    };
+    textInput.onchange = function(e) {
+        var v = parseInt(textInput.value, 10);
+        if (!isNaN(v)) {
+            slider.value = "" + v;
+            callback(v);
+        }
+    };
+    var incButton;
+    var decButton;
+    if (withButtons) {
+        decButton = yoob.makeButton(container, "-", function() { 
+            var v = parseInt(textInput.value, 10);
+            if ((!isNaN(v)) && v > min_) {
+                v--;
+                textInput.value = "" + v;
+                slider.value = "" + v;
+                callback(v);
+            }
+        });
+        incButton = yoob.makeButton(container, "+", function() {
+            var v = parseInt(textInput.value, 10);
+            if ((!isNaN(v)) && v < max_) {
+                v++;
+                textInput.value = "" + v;
+                slider.value = "" + v;
+                callback(v);
+            }
+        });
+    }
+    return new RangeControl().init({
+        'slider': slider,
+        'incButton': incButton,
+        'decButton': decButton,
+        'textInput': textInput,
+        'callback': callback
     });
 };
 
@@ -231,11 +303,9 @@ yoob.makeSVG = function(container) {
 
 yoob.makeSVGElem = function(svg, tag, cfg) {
     var elem = document.createElementNS(svg.namespaceURI, tag);
-    for (var key in cfg) {
-        if (cfg.hasOwnProperty(key)) {
-            elem.setAttribute(key, cfg[key]);
-        }
-    }
+    Object.keys(cfg).forEach(function(key) {
+        elem.setAttribute(key, cfg[key]);
+    });
     svg.appendChild(elem);
     return elem;
 };
