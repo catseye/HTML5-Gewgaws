@@ -5,8 +5,7 @@ var bgimg = new Image();
 function launch(prefix, containerId, config) {
     var config = config || {};
     var deps = [
-        "element-factory.js",
-        "canvas-resizer.js"
+        "element-factory.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
@@ -36,28 +35,15 @@ function launch(prefix, containerId, config) {
             var backing = yoob.makeCanvas(container, 500, 310);
             backing.style.zIndex = "0";
 
-            var resize = function() {
-                backing.style.display = canvas.style.display;
-                backing.style.marginTop = canvas.style.marginTop;
-                backing.style.left = canvas.offsetLeft + "px";
-                backing.style.top = canvas.offsetTop + "px";
-                backing.width = canvas.width;
-                backing.height = canvas.height;
-                backing.getContext('2d').drawImage(bgimg, 0, 0, backing.width, backing.height);
-                canvas.style.zIndex = "100";
-                backing.style.zIndex = "0";
-            };
-
-            var cr = (new yoob.CanvasResizer()).init({
-                canvas: canvas,
-                desiredWidth: 500,
-                desiredHeight: 310,
-                allowExpansion: false,
-                allowContraction: false,
-                missingCanvasElement: msg,
-                onResizeFail: resize,
-                onResizeEnd: resize
-            }).register();
+            backing.style.display = canvas.style.display;
+            backing.style.marginTop = canvas.style.marginTop;
+            backing.style.left = canvas.offsetLeft + "px";
+            backing.style.top = canvas.offsetTop + "px";
+            backing.width = canvas.width;
+            backing.height = canvas.height;
+            backing.getContext('2d').drawImage(bgimg, 0, 0, backing.width, backing.height);
+            canvas.style.zIndex = "100";
+            backing.style.zIndex = "0";
 
             var artURL = config.artURL || 'art.jpg';
             var gewgaw = new ArtRestorationSimulator();
