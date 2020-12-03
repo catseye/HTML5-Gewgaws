@@ -16,7 +16,7 @@ function launch(prefix, containerId, config) {
             var container = document.getElementById(containerId);
 
             yoob.makeParagraph(container,
-                'When you are finished, see <a href="http://feldmangallery.com/media/pdfs/Ukeles_MANIFESTO.pdf">(Ukeles, 1969)</a> for further instructions</p>'
+                'When you are finished, see <a href="https://static.catseye.tc/archive/feldmangallery.com/media/pdfs/Ukeles_MANIFESTO.pdf">(Ukeles, 1969)</a> for further instructions</p>'
             );
 
             container = yoob.makeDiv(container);
