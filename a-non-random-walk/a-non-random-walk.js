@@ -2,8 +2,7 @@ function launch(prefix, containerId) {
     var deps = [
         "element-factory.js",
         "animation.js",
-        "sprite-manager.js",
-        "canvas-resizer.js"
+        "sprite-manager.js"
     ];
     var loaded = 0;
     for (var i = 0; i < deps.length; i++) {
@@ -17,18 +16,7 @@ function launch(prefix, containerId) {
             var button = yoob.makeButton(container, 'Reset', gewgaw.reset);
             var hanger = yoob.makeDiv(container);
             var canvas = yoob.makeCanvas(hanger, 600, 400);
-            var initialized = false;
-            var cr = (new yoob.CanvasResizer()).init({
-                canvas: canvas,
-                onResizeEnd: function() {
-                    if (!initialized) {
-                        gewgaw.init(canvas);
-                        initialized = true;
-                    }
-                },
-                desiredWidth: 600,
-                desiredHeight: 400
-            }).register();
+            gewgaw.init(canvas);
         };
         document.body.appendChild(elem);
     }
