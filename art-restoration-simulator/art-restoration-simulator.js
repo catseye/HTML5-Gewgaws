@@ -19,13 +19,6 @@ function launch(prefix, containerId, config) {
                 'When you are finished, see <a href="https://static.catseye.tc/archive/feldmangallery.com/media/pdfs/Ukeles_MANIFESTO.pdf">(Ukeles, 1969)</a> for further instructions</p>'
             );
 
-            container = yoob.makeDiv(container);
-            var msg = yoob.makeParagraph(
-                container,
-                "Not enough room to display the canvas! Resize your browser! Or use a device with a larger screen!"
-            );
-            msg.style.display = 'none';
-
             var canvas = yoob.makeCanvas(container, 500, 310);
             canvas.style.position = 'absolute';
             canvas.style.background = 'transparent';
@@ -129,19 +122,17 @@ var ArtRestorationSimulator = function() {
         if (!mouseDown) return;
         canvasX = touch.pageX - this.canvas.offsetLeft;
         canvasY = touch.pageY - this.canvas.offsetTop;
-        canvasCtx.putImageData(imageData, 0, 0);
-        if (mouseDown) {
-            var range = 10;
-            var w = this.canvas.width;
-            for (var dx = 0; dx < range; dx++) {
-                var x = canvasX - range + dx;
-                for (var dy = 0; dy < range; dy++) {
-                    if (mask[dy].charAt(dx) !== '*') continue;
-                    var y = canvasY - range + dy;
-                    var index = (y * w + x) * 4;
-                    imageData.data[index + 3] -= 12;
-                }
+        var range = 10;
+        var w = this.canvas.width;
+        for (var dx = 0; dx < range; dx++) {
+            var x = canvasX - range + dx;
+            for (var dy = 0; dy < range; dy++) {
+                if (mask[dy].charAt(dx) !== '*') continue;
+                var y = canvasY - range + dy;
+                var index = (y * w + x) * 4;
+                imageData.data[index + 3] -= 12;
             }
         }
+        canvasCtx.putImageData(imageData, 0, 0);
     };
 }
