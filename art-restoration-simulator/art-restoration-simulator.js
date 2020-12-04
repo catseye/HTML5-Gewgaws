@@ -120,8 +120,8 @@ var ArtRestorationSimulator = function() {
 
     this.onmousemove = function(e, touch) {
         if (!mouseDown) return;
-        canvasX = touch.pageX - this.canvas.offsetLeft;
-        canvasY = touch.pageY - this.canvas.offsetTop;
+        canvasX = Math.trunc(touch.pageX - this.canvas.offsetLeft);
+        canvasY = Math.trunc(touch.pageY - this.canvas.offsetTop);
         var range = 10;
         var w = this.canvas.width;
         for (var dx = 0; dx < range; dx++) {
