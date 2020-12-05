@@ -79,7 +79,6 @@ var MarkovFont = function() {
 
     this.examineChar = function() {
         if (this.charIndex > 255) {
-            console.log(uneval(this.table));
             clearInterval(this.intervalId);
             this.canvas.parentElement.style.display = 'none';
             this.generated = 0;
