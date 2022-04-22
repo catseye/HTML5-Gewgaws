@@ -3,7 +3,6 @@ function launch(prefix, containerId, config) {
     var deps = [
         "element-factory.js",
         "animation.js",
-        "preset-manager.js",
         "splash-screen.js"
     ];
     var loaded = 0;
@@ -14,34 +13,20 @@ function launch(prefix, containerId, config) {
             if (++loaded < deps.length) return;
             var container = document.getElementById(containerId);
 
-            var presetSelect = yoob.makeSelect(container, "MODE", []);
+            var t = new FractalRectangles();
+
+            var presetSelect = yoob.makeSelect(container, "MODE", [
+                [1, "STATIC"],
+                [2, "SYNC GLITCH"],
+                [3, "SUPERSYNC GLITCH"],
+                [4, "ASYNC GLITCH"]
+            ], function(n) {
+                t.style = n;
+            }, 'STATIC');
             yoob.makeLineBreak(container);
 
-            var t = new FractalRectangles();
             var canvas = yoob.makeCanvas(container, 500, 500);
             canvas.id = 'canvas'; // FIXME
-
-            var p = new yoob.PresetManager();
-            p.init({
-                'selectElem': presetSelect
-            });
-            var presets = {
-                "STATIC": function(n) {
-                    t.style = 1;
-                },
-                "SYNC GLITCH": function(n) {
-                    t.style = 2;
-                },
-                "SUPERSYNC GLITCH": function(n) {
-                    t.style = 3;
-                },
-                "ASYNC GLITCH": function(n) {
-                    t.style = 4;
-                }
-            };
-            for (n in presets) {
-                p.add(n, presets[n]);
-            }
 
             yoob.showSplashScreen({
                 elementId: 'canvas',
